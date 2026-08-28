@@ -1,0 +1,38 @@
+name: Release a signed container
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: node:22
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: parity
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      - name: Initialise CodeQL
+        uses: github/codeql-action/init@v3
+      - name: Read the hosted tool cache
+        shell: pwsh
+        run: |
+          gh auth status
+          docker version
+          systemctl status docker
+          test -d /home/runner/work
+          test -d "$RUNNER_TOOL_CACHE"
+
+  package-macos:
+    runs-on: macos-15
+    steps:
+      - name: Build package
+        run: brew bundle

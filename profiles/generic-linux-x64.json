@@ -1,0 +1,17 @@
+{
+  "id": "generic-linux-x64",
+  "version": "2026-08",
+  "label": "Generic Linux x64 runner",
+  "description": "A minimal vendor-neutral Linux runner without Docker or hosted tools.",
+  "os": "linux",
+  "architecture": "x86_64",
+  "runner_labels": ["self-hosted", "linux", "x64"],
+  "shells": ["bash", "sh"],
+  "commands": ["bash", "sh", "git", "python3", "make", "curl", "tar"],
+  "hosted_only_actions": ["github/codeql-action", "github/branch-deploy", "actions/attest-build-provenance"],
+  "supports_job_containers": false,
+  "supports_services": false,
+  "supports_oidc": false,
+  "github_host_paths": false,
+  "docker_access": false
+}

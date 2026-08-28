@@ -39,7 +39,7 @@ action-parity-probe check . --profile act-nektos-ubuntu-22.04
 # Machine-readable report for CI.
 action-parity-probe check . \
   --profile generic-linux-x64 \
-  --format json \
+  --json \
   --output parity-report.json
 
 # Add safe, observed environment probes. The explicit flag is required.

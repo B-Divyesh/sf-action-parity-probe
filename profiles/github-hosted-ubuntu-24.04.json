@@ -1,0 +1,17 @@
+{
+  "id": "github-hosted-ubuntu-24.04",
+  "version": "2026-08",
+  "label": "GitHub-hosted Ubuntu 24.04",
+  "description": "GitHub's maintained x64 Ubuntu image and Actions runtime.",
+  "os": "linux",
+  "architecture": "x86_64",
+  "runner_labels": ["ubuntu-latest", "ubuntu-24.04", "ubuntu-22.04"],
+  "shells": ["bash", "sh", "pwsh", "python"],
+  "commands": ["bash", "sh", "pwsh", "git", "gh", "docker", "node", "npm", "python", "python3", "ruby", "java", "mvn", "gradle", "cargo", "rustup", "make", "curl", "wget", "jq", "tar", "unzip", "zip", "sudo", "apt-get"],
+  "hosted_only_actions": [],
+  "supports_job_containers": true,
+  "supports_services": true,
+  "supports_oidc": true,
+  "github_host_paths": true,
+  "docker_access": true
+}

@@ -1,67 +1,43 @@
-# Action Parity Probe polish handoff
+# Action Parity Probe review-2 handoff
 
-Work order: `action-parity-probe-polish-1`  
-Base reviewed: `ba9a8ca50698376b22911f63dfbe030ac45ad2cf`  
-Review findings: `ad107c65c1a68798599fc146815a40eae9016ede` / `.factory/review-1.md`  
-Repair commit: `1cfdb723513cabe6eef8abf7f155facf5715c490`  
-Evidence update: `75ee91429ac830f5342c5a916ca6610b16f5481c`  
+Work order: `action-parity-probe-review-2`
+Reviewed commit: `d9bb15fbcf3a651493240d6225b1db5e1c85d882`
 Completed: 28 August 2026
 
-## Delivered
+## Work completed
 
-- Reworked the one-click demo at `/?demo=1`: it is read-only, shows its banner,
-  Reset demo and Install the CLI controls, and displays NONPORTABLE plus a real
-  sample finding in the first 390×844 viewport.
-- Added 15 registered claims and tests. The new coverage includes browser entry,
-  browser/CLI sample equivalence, exit codes, probe boundary, rule coverage,
-  exact profiles/aliases, and repository preservation in the CLI demo.
-- Rewrote all review-flagged landing and README copy; updated the copy audit and
-  verb-first catalog description.
-- Completed standalone 404 metadata and header parity, then added its regression.
-- Preserved the night-market runner visual system and self-hosted asset policy.
+- Performed the required independent, read-only review of the deployed site at
+  390×844 and 1440×900, including fresh-context demo, privacy, structure,
+  accessibility, route, link, and history checks.
+- Read the brief, design, claims, prior review, polish report, and prior
+  handoff. Recorded the complete result in `.factory/review-2.md`.
+- Cloned the current remote into
+  `/tmp/action-parity-probe-review-2-HQwh13`, ran `npm ci`, all 15 exact claim
+  commands, then full `npm test` and `npm run build`. All passed.
+- Committed only this review and handoff documentation; no product code was
+  modified.
 
-## How to run and verify
+## Verification
 
 ```sh
 npm ci
 npm test
 npm run build
-npm run preview -- --host 127.0.0.1
-scripts/verify-url.sh http://127.0.0.1:4173/?demo=1
+scripts/verify-url.sh https://action-parity-probe.sociobot.in/
 ```
 
-`npm test` passed locally: 47 tests passed and 3 desktop-only mobile checks
-were skipped as designed. It includes 8 Rust tests and 39 executed Playwright
-tests across desktop and 390×844 mobile. The build output is `dist/site/`.
-The generated initial JS is 18.51 KB raw / 5.73 KB gzip; CSS is 12.99 KB raw /
-3.61 KB gzip.
+The live route crawl returned 200 for every real internal link and HTTP 404 for
+an unknown route. Live Axe checks at 390 and 1440 found zero serious or critical
+issues on `/`, `/demo`, `/privacy`, `/terms`, and `/missing-route`.
 
-Every exact command in `.factory/claims.json` was also run from clean clone
-`/tmp/action-parity-probe-clean-gu83jm` after `npm ci`; all 15 passed. Its full
-`npm test` and `npm run build` completed after the claim loop.
+## Findings left
 
-Playwright Axe found no serious or critical issue on `/`, `/demo`, `/privacy`,
-`/terms`, or `/missing-route` at both tested widths. The standalone Axe CLI
-could not locate a system Chrome binary in this worker; the pinned Playwright
-Axe integration is the successful accessibility evidence.
+The review verdict is **FAIL** with three blocking findings:
 
-## Deploy
+1. `F-2-1`: Reset demo has no observable effect; `replay` is not styled.
+2. `F-2-2`: The CLI landing page lacks the required self-hosted terminal
+   recording of the real sample command.
+3. `F-2-3`: Earlier `F-1-13` remains half-fixed because the demo preservation
+   test snapshots only root names and one root file, not a full tree.
 
-Publish `dist/site/` with its supplied `staticwebapp.config.json`. The config
-rewrites `/demo`, `/privacy`, and `/terms`, and returns the product-specific
-`404.html` with HTTP 404 for unknown URLs. Production target:
-`https://action-parity-probe.sociobot.in/?demo=1`.
-
-Deployed production with `swa deploy dist/site --env production --app-name
-sf-action-parity-probe --resource-group sociobot`. A cold check now serves
-`/assets/index-BzglrT4p.js`, which contains the one-click demo summary. The
-live demo, legal routes, and styled HTTP 404 passed the URL, accessibility, and
-metadata rechecks; mobile evidence is
-`/tmp/action-parity-probe-evidence/live-demo-mobile.png`.
-
-## Known gaps
-
-No product findings remain. The declared product limits remain intentional:
-expressions, custom actions, and reusable workflows are not expanded; profiles
-are versioned snapshots; probes observe the local host rather than a remote
-runner.
+See `.factory/review-2.md` for exact evidence and required fixes.

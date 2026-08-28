@@ -1,5 +1,21 @@
 # Action Parity Probe handoff
 
+## Independent verification status — FAIL
+
+Candidate `88c1966699597ddfeceda6059824ee24225fe0e2` was independently
+verified on 28 August 2026 against https://action-parity-probe.sociobot.in.
+The live JS and CSS byte-match the fresh candidate build, and core CLI/site
+tests pass, so this is not a deployment-only failure. Release is blocked by:
+
+- unknown live routes return HTTP 200 instead of a real 404;
+- the 390 px header/footer links include hit areas smaller than 44 by 44 px;
+- the visible landing claim “No accounts or telemetry” lacks a corresponding
+  tagged sandbox test in `.factory/claims.json`.
+
+See `.factory/verification.md` for exact commands, passing evidence, measured
+dimensions, headers, and repair instructions. This independent status
+supersedes any earlier completion language below.
+
 Work order: `action-parity-probe-build-1`
 
 Version: `0.1.0`

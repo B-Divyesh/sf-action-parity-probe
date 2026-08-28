@@ -1,65 +1,46 @@
-# Landing-page copy audit
+# Copy audit — polish round 1
 
-Audited on 28 August 2026. Counts treat a hyphenated term, command, or path as
-one word. The 18 full sentences average 7.8 words. No sentence exceeds 22
-words. No copy uses a banned word.
+Reviewed: 28 August 2026. Counts treat commands and hyphenated terms as one
+word. No landing or README sentence exceeds 22 words. The banned-word scan
+found no matches.
 
-## Full sentences
+## Landing copy
 
 | Copy | Words | Result |
 | --- | ---: | --- |
 | Check workflow differences before changing CI runners | 7 | Pass |
-| For platform teams comparing local or alternate runners before an outage forces the move. | 13 | Pass |
-| See a real report in one click. | 7 | Pass |
-| Runner racks line a night market under connected parity signs. | 10 | Pass |
-| Every bright sign is a declared requirement. | 7 | Pass |
-| See the mismatch before the migration | 6 | Pass |
-| This recorded output comes from the bundled workflow and the real CLI. | 11 | Pass |
-| The CLI reads YAML files under `.github/workflows`. | 7 | Pass |
-| Compare with GitHub-hosted, act, generic Linux, or self-hosted Linux. | 9 | Pass |
-| Share terminal, JSON, Markdown, or SARIF output with your migration review. | 11 | Pass |
-| Run the check on your repository | 6 | Pass |
-| Build the single Rust binary. | 5 | Pass |
-| Then choose a versioned target profile. | 6 | Pass |
-| A readiness report, not another runner | 6 | Pass |
+| For platform teams comparing local or alternate runners before an outage forces the move. | 14 | Pass |
+| Open the sample report. | 4 | Pass |
+| Each sign represents one sample workflow requirement. | 7 | Pass |
+| Find incompatible steps before switching runners | 6 | Pass |
+| Read the bundled sample report. | 5 | Pass |
+| Share the compatibility report | 4 | Pass |
+| Install the CLI. | 3 | Pass |
 | It does not execute actions, translate YAML, or promise a passing build. | 12 | Pass |
-| Static findings show declared risks. | 5 | Pass |
-| Observed findings show local probe failures. | 6 | Pass |
-| Check workflow differences before changing CI runners. | 7 | Pass |
 
-## Interface fragments
+## README copy
 
 | Copy | Words | Result |
 | --- | ---: | --- |
-| Runner migration check | 3 | Pass |
-| Try it with sample data | 5 | Pass |
-| No workflow steps run | 4 | Pass |
-| No accounts or telemetry | 4 | Pass |
-| Free and open source | 4 | Pass |
-| How the check works | 4 | Pass |
-| Point at a repository | 4 | Pass |
-| Choose a runner profile | 4 | Pass |
-| Carry the report | 3 | Pass |
-| Start for real | 3 | Pass |
-| Copy install command | 3 | Pass |
-| Read the privacy boundary | 4 | Pass |
-
-The recorded report also shows CLI output generated from the bundled sample.
-Its rule titles are short factual labels rather than landing-page prose.
+| It inventories workflow requirements and compares them with a versioned runner profile. | 11 | Pass |
+| Static warnings stay separate from opt-in host checks that run only with `--probe --sandbox`. | 13 | Pass |
+| The command copies a sample repository to a temporary directory. | 10 | Pass |
+| It checks the bundled `act` profile. | 6 | Pass |
+| It saves a Markdown report and prints the path. | 9 | Pass |
+| Exit `0` means portable or warnings only. | 7 | Pass |
+| Exit `1` means a nonportable requirement. | 6 | Pass |
+| Exit `2` means invalid input or usage. | 7 | Pass |
+| The probe checks declared commands and shells on the current host. | 11 | Pass |
+| It also reports filesystem case behavior and Docker socket access. | 10 | Pass |
 
 ## Terminology
 
-| Concept | One term used |
+| Concept | One term |
 | --- | --- |
-| Input automation file | workflow |
-| Target execution environment | runner profile |
-| Comparison result | report |
-| Declared risk | static finding |
-| Local probe failure | observed finding |
-| One-click fixture | sample data |
-| Local protected probe area | sandbox |
-
-## Catalog description
-
-“Check workflow differences before changing CI runners.” — 7 words and 53
-characters. It starts with a verb and contains no marketing term.
+| GitHub Actions definition | workflow |
+| Target capability definition | runner profile |
+| Result document | report |
+| Declarative mismatch | static finding |
+| Host observation mismatch | observed finding |
+| One-click input | sample data |
+| Restricted host checking mode | sandbox probe |

@@ -36,10 +36,45 @@
   },
   {
     "id": "versioned-profiles",
-    "claim": "Ships four versioned runner profiles.",
+    "claim": "Ships GitHub-hosted, act, generic Linux, and self-hosted Linux profiles.",
     "where": "landing page and README",
     "test": "npm test -- --grep @claim:versioned-profiles",
     "sandbox": "fresh CLI process; list profiles as JSON and validate count and version format"
+  },
+  {
+    "id": "browser-demo-entry",
+    "claim": "Try it with sample data opens an isolated report in one click.",
+    "where": "landing action and demo banner",
+    "test": "npm test -- --grep @claim:browser-demo-entry",
+    "sandbox": "fresh 390px browser context; click the landing action once and assert ?demo=1, banner, result, and sample finding inside the first viewport"
+  },
+  {
+    "id": "browser-cli-sample",
+    "claim": "The browser demo shows the bundled CLI sample report.",
+    "where": "browser demo and README",
+    "test": "npm test -- --grep @claim:browser-cli-sample",
+    "sandbox": "fresh CLI process and browser context; compare profile, summary, inventory, and findings with the generated browser fixture"
+  },
+  {
+    "id": "exit-codes",
+    "claim": "Exit 0 means portable or warnings only; 1 means nonportable; 2 means invalid input or usage.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:exit-codes",
+    "sandbox": "fresh temporary portable workflow, bundled nonportable sample, and missing path; assert 0, 1, and 2"
+  },
+  {
+    "id": "probe-scope",
+    "claim": "The probe checks declared commands and shells, filesystem case behavior, and Docker socket access without running workflow steps.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:probe-scope",
+    "sandbox": "controlled workflow with a marker-writing run step; force missing PATH and assert the four observation classes while the marker remains absent"
+  },
+  {
+    "id": "rule-coverage",
+    "claim": "Rules check runner labels, services, containers, OIDC, shells, hosted-only actions, action versions, commands, Docker, and GitHub-hosted paths.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:rule-coverage",
+    "sandbox": "bundled sample against generic profile; assert one rule id for every documented category"
   },
   {
     "id": "site-privacy",

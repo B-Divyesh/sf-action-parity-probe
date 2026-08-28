@@ -31,7 +31,7 @@ function header() {
   return `<header class="site-header">
     <a class="wordmark route-link" href="/" aria-label="Action Parity Probe home">${gateMark()}<span>Action Parity Probe</span></a>
     <nav aria-label="Main navigation">
-      <a class="route-link" href="/demo">Demo</a>
+      <a class="route-link" href="/?demo=1">Demo</a>
       <a class="route-link" href="/#install">Install</a>
       <a class="route-link" href="/privacy">Privacy</a>
     </nav>
@@ -80,6 +80,15 @@ function terminalPreview(full = false) {
   </section>`;
 }
 
+function demoResult() {
+  const first = report.findings[0];
+  return `<section class="demo-result" aria-label="Sample compatibility result">
+    <p class="result-kicker">Sample result</p>
+    <div class="result-line"><strong>NONPORTABLE</strong><span>${report.summary.errors} errors</span><span>${report.summary.warnings} warnings</span></div>
+    <p><b>${escapeText(first.rule_id)} · ${escapeText(first.title)}</b></p>
+  </section>`;
+}
+
 function homePage() {
   return `<main id="main" tabindex="-1">
     <section class="hero wrap">
@@ -88,22 +97,22 @@ function homePage() {
         <h1>Check workflow differences before changing CI runners</h1>
         <p class="lede">For platform teams comparing local or alternate runners before an outage forces the move.</p>
         <div class="hero-action">
-          <a class="button primary route-link" href="/demo">Try it with sample data</a>
-          <span>See a real report in one click.</span>
+          <a class="button primary route-link" href="/?demo=1">Try it with sample data</a>
+          <span>Open the sample report.</span>
         </div>
         ${factList()}
       </div>
       <figure class="hero-art">
         <img src="/assets/hero-market.webp" width="1440" height="960" alt="Runner racks line a night market under connected parity signs." fetchpriority="high" />
-        <figcaption><span>01</span> Every bright sign is a declared requirement.</figcaption>
+        <figcaption><span>01</span> Each sign represents one sample workflow requirement.</figcaption>
       </figure>
     </section>
 
     <section class="preview-section wrap" aria-labelledby="preview-title">
       <div class="section-label"><span>LIVE / 02</span></div>
       <div class="section-intro">
-        <h2 id="preview-title">See the mismatch before the migration</h2>
-        <p>This recorded output comes from the bundled workflow and the real CLI.</p>
+        <h2 id="preview-title">Find incompatible steps before switching runners</h2>
+        <p>Read the bundled sample report.</p>
       </div>
       ${terminalPreview()}
     </section>
@@ -114,7 +123,7 @@ function homePage() {
       <ol class="process-list">
         <li><b>01</b><div><h3>Point at a repository</h3><p>The CLI reads YAML files under <code>.github/workflows</code>.</p></div></li>
         <li><b>02</b><div><h3>Choose a runner profile</h3><p>Compare with GitHub-hosted, act, generic Linux, or self-hosted Linux.</p></div></li>
-        <li><b>03</b><div><h3>Carry the report</h3><p>Share terminal, JSON, Markdown, or SARIF output with your migration review.</p></div></li>
+        <li><b>03</b><div><h3>Share the compatibility report</h3><p>Share terminal, JSON, Markdown, or SARIF output with your migration review.</p></div></li>
       </ol>
     </section>
 
@@ -122,7 +131,7 @@ function homePage() {
       <div>
         <p class="eyebrow"><span></span> Start for real</p>
         <h2 id="install-title">Run the check on your repository</h2>
-        <p>Build the single Rust binary. Then choose a versioned target profile.</p>
+        <p>Install the CLI. Then choose a versioned target profile.</p>
       </div>
       <div class="install-command">
         <code>cargo install --git https://github.com/B-Divyesh/sf-action-parity-probe</code>
@@ -147,13 +156,14 @@ action-parity-probe check . --profile self-hosted --probe --sandbox</code></pre>
 function demoPage() {
   const actions = report.inventory.actions.map((item) => `<li><code>${escapeText(item.value)}</code></li>`).join("");
   const images = [...report.inventory.job_images, ...report.inventory.service_images].map((item) => `<li><code>${escapeText(item.value)}</code></li>`).join("");
-  return `<div class="demo-banner" role="status"><span>Demo — sample data, nothing is saved</span><div><button type="button" data-reset-demo>Reset demo</button><a class="route-link" href="/#install">Start for real</a></div></div>
+  return `<div class="demo-banner" role="status"><span>Demo — sample data, nothing is saved</span><div><button type="button" data-reset-demo>Reset demo</button><a class="route-link" href="/#install">Install the CLI</a></div></div>
   <main id="main" tabindex="-1" class="demo-main wrap">
     <section class="demo-heading">
-      <p class="eyebrow"><span></span> Isolated sample</p>
+      <p class="eyebrow"><span></span> Isolated sample · read only</p>
       <h1>See the sample workflow differences</h1>
-      <p class="lede">A release workflow meets the act runner profile before your repository does.</p>
+      <p class="lede">Check a release workflow against the act runner profile before changing your repository.</p>
     </section>
+    ${demoResult()}
     <div class="sample-strip" aria-label="Sample inventory">
       <div><b>${report.inventory.workflow_files.length}</b><span>workflow</span></div>
       <div><b>${report.inventory.actions.length}</b><span>actions</span></div>
@@ -212,11 +222,12 @@ function notFoundPage() {
 
 function render({ focus = true, scrollY = 0 } = {}) {
   const path = normalisePath(location.pathname);
-  const page = path === "/" ? homePage() : path === "/demo" ? demoPage() : path === "/privacy" ? privacyPage() : path === "/terms" ? termsPage() : notFoundPage();
-  const info = routeInfo[path] || { title: "Not found — Action Parity Probe", description: "Return to Action Parity Probe." };
+  const isDemo = path === "/demo" || new URLSearchParams(location.search).get("demo") === "1";
+  const page = isDemo ? demoPage() : path === "/" ? homePage() : path === "/privacy" ? privacyPage() : path === "/terms" ? termsPage() : notFoundPage();
+  const info = isDemo ? routeInfo["/demo"] : routeInfo[path] || { title: "Not found — Action Parity Probe", description: "Return to Action Parity Probe." };
   document.title = info.title;
   document.querySelector('meta[name="description"]').setAttribute("content", info.description);
-  const canonical = `https://action-parity-probe.sociobot.in${path === "/" ? "/" : path}`;
+  const canonical = `https://action-parity-probe.sociobot.in${isDemo ? "/demo" : path === "/" ? "/" : path}`;
   document.querySelector('link[rel="canonical"]').setAttribute("href", canonical);
   document.querySelector('meta[property="og:title"]').setAttribute("content", info.title);
   document.querySelector('meta[property="og:description"]').setAttribute("content", info.description);
@@ -260,7 +271,7 @@ function navigate(event) {
   if (url.origin !== location.origin) return;
   event.preventDefault();
   history.replaceState({ ...history.state, scrollY: window.scrollY }, "");
-  history.pushState({ scrollY: 0 }, "", `${url.pathname}${url.hash}`);
+  history.pushState({ scrollY: 0 }, "", `${url.pathname}${url.search}${url.hash}`);
   render();
   if (url.hash) requestAnimationFrame(() => document.querySelector(url.hash)?.scrollIntoView());
 }

@@ -1,48 +1,58 @@
-# Action Parity Probe review handoff
+# Action Parity Probe polish handoff
 
-Work order: `action-parity-probe-review-1`
-
-Reviewed candidate: `3e341ac7ce6fe2db5fe630318e1ba41ee6f317ff`
-
-Live URL: https://action-parity-probe.sociobot.in
-
+Work order: `action-parity-probe-polish-1`  
+Base reviewed: `ba9a8ca50698376b22911f63dfbe030ac45ad2cf`  
+Review findings: `ad107c65c1a68798599fc146815a40eae9016ede` / `.factory/review-1.md`  
 Completed: 28 August 2026
 
-## Decision
+## Delivered
 
-**FAIL.** The complete adversarial review is in `.factory/review-1.md`.
-It records 28 findings. The primary blocker is that the actual compatibility
-result falls below the first 390×844 demo viewport. Additional blockers cover
-unlisted or under-tested landing/README claims. Minor findings cover three
-overlong README sentences, vague/jargon-heavy copy, one non-result action,
-standalone 404 metadata/header parity, and missing deployment guidance.
+- Reworked the one-click demo at `/?demo=1`: it is read-only, shows its banner,
+  Reset demo and Install the CLI controls, and displays NONPORTABLE plus a real
+  sample finding in the first 390×844 viewport.
+- Added 15 registered claims and tests. The new coverage includes browser entry,
+  browser/CLI sample equivalence, exit codes, probe boundary, rule coverage,
+  exact profiles/aliases, and repository preservation in the CLI demo.
+- Rewrote all review-flagged landing and README copy; updated the copy audit and
+  verb-first catalog description.
+- Completed standalone 404 metadata and header parity, then added its regression.
+- Preserved the night-market runner visual system and self-hosted asset policy.
 
-## Verification completed
+## How to run and verify
 
-- Opened the live site cold at 390×844 and 1440×900; the landing clearly states
-  what it does, for whom, and the first action.
-- Ran every exact `.factory/claims.json` command from a fresh clone; all ten
-  passed in desktop and mobile projects.
-- Ran `npm test` from that clone: 8 Rust tests and 38 Playwright tests passed;
-  2 desktop-only mobile checks were skipped as designed.
-- Ran the CLI demo from an empty temporary directory; it exited 0, left the
-  working directory untouched, and wrote its report under a separate temp path.
-- Exercised browser demo reset, same-origin interception, cookies/storage, and
-  preservation of a seeded real-data marker.
-- Crawled live routes/links, checked metadata and the real HTTP 404, exercised
-  history/focus, ran axe at mobile and desktop widths, measured touch targets,
-  and ran `scripts/verify-url.sh` against production.
-- Confirmed live JS/CSS hashes match the clean candidate build.
-- Rechecked every earlier verification/handoff finding. The prior 404, mobile
-  touch-target, privacy-claim, missing verifier script, and stale-count issues
-  are genuinely fixed.
+```sh
+npm ci
+npm test
+npm run build
+npm run preview -- --host 127.0.0.1
+scripts/verify-url.sh http://127.0.0.1:4173/?demo=1
+```
 
-## Repository impact
+`npm test` passed locally: 47 tests passed and 3 desktop-only mobile checks
+were skipped as designed. It includes 8 Rust tests and 39 executed Playwright
+tests across desktop and 390×844 mobile. The build output is `dist/site/`.
+The generated initial JS is 18.51 KB raw / 5.73 KB gzip; CSS is 12.99 KB raw /
+3.61 KB gzip.
 
-No product code was changed. This review updates only
-`.factory/review-1.md` and `.factory/handoff.md`.
+Every exact command in `.factory/claims.json` was also run from a clean clone;
+all 15 passed. The clean-clone log and deployed-site check are recorded after
+the repair commit in this handoff's follow-up commit.
 
-## Next step
+Playwright Axe found no serious or critical issue on `/`, `/demo`, `/privacy`,
+`/terms`, or `/missing-route` at both tested widths. The standalone Axe CLI
+could not locate a system Chrome binary in this worker; the pinned Playwright
+Axe integration is the successful accessibility evidence.
 
-Repair every finding in `.factory/review-1.md`, add the missing claim coverage,
-and repeat the whole review from a fresh clone and fresh browser contexts.
+## Deploy
+
+Publish `dist/site/` with its supplied `staticwebapp.config.json`. The config
+rewrites `/demo`, `/privacy`, and `/terms`, and returns the product-specific
+`404.html` with HTTP 404 for unknown URLs. Production target:
+`https://action-parity-probe.sociobot.in/?demo=1`.
+
+## Known gaps
+
+No product findings remain. The declared product limits remain intentional:
+expressions, custom actions, and reusable workflows are not expanded; profiles
+are versioned snapshots; probes observe the local host rather than a remote
+runner.

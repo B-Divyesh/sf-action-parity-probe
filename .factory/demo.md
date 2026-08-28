@@ -2,7 +2,7 @@
 
 ## Entry points
 
-- Browser: `https://action-parity-probe.sociobot.in/demo`
+- Browser: `https://action-parity-probe.sociobot.in/?demo=1` (also available at `/demo`)
 - CLI: `action-parity-probe demo`
 - Local site: `npm run dev`, then open `http://localhost:4173/demo`
 
@@ -11,8 +11,9 @@ PowerShell, GitHub CLI, Docker, GitHub-hosted paths, and a macOS job. It lives
 under `examples/sample-repo/`.
 
 The browser report is generated from the real Rust binary during every site
-build. The browser demo is read-only and uses no storage namespace because it
-stores no state. **Reset demo** only restarts the terminal row animation.
+build. `?demo=1` is an isolated, read-only route: it does not read or write
+browser storage or real data. **Reset demo** only restarts the terminal row
+animation. **Install the CLI** leaves the demo for the install instructions.
 
 The CLI demo copies the sample into a fresh operating-system temporary
 directory, runs safe host probes, and leaves a Markdown report there. It never

@@ -22,7 +22,7 @@ for (const route of ["/", "/demo", "/privacy", "/terms", "/missing-route"]) {
 test("history navigation restores the page and focuses its heading", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Try it with sample data" }).click();
-  await expect(page).toHaveURL(/\/demo$/);
+  await expect(page).toHaveURL(/\/?\?demo=1$/);
   await expect(page.locator("h1")).toBeFocused();
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
@@ -70,4 +70,9 @@ test("static host configuration returns a styled 404 for unknown paths", () => {
   const document = readFileSync("site/public/404.html", "utf8");
   expect(document).toContain("<main id=\"main\"");
   expect(document).toContain("This runner label does not exist");
+  expect(document).toContain('rel="canonical"');
+  expect(document).toContain('property="og:title"');
+  expect(document).toContain('name="twitter:card"');
+  expect(document).toContain('rel="apple-touch-icon"');
+  expect(document).toContain('href="/#install"');
 });

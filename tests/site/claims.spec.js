@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -57,20 +57,90 @@ test("@claim:report-formats emits four portable report formats", () => {
 });
 
 test("@claim:demo-sandbox demo uses sample data and preserves a report", () => {
-  const result = run(["demo"]);
+  const repository = mkdtempSync(join(tmpdir(), "parity-demo-repository-"));
+  writeFileSync(join(repository, "sentinel.txt"), "unchanged");
+  const before = readdirSync(repository).sort();
+  const result = spawnSync(binary, ["demo"], { encoding: "utf8", cwd: repository });
   expect(result.status).toBe(0);
   expect(result.stdout).toContain("Demo — bundled sample data");
   const reportPath = result.stdout.match(/Report: (.+)/)?.[1]?.trim();
   expect(reportPath).toBeTruthy();
   expect(readFileSync(reportPath, "utf8")).toContain("# Action Parity Probe report");
+  expect(readdirSync(repository).sort()).toEqual(before);
+  expect(readFileSync(join(repository, "sentinel.txt"), "utf8")).toBe("unchanged");
 });
 
 test("@claim:versioned-profiles ships four versioned runner profiles", () => {
   const result = run(["profiles", "--json"]);
   expect(result.status).toBe(0);
   const profiles = JSON.parse(result.stdout);
-  expect(profiles).toHaveLength(4);
+  expect(profiles.map((profile) => profile.id).sort()).toEqual([
+    "act-nektos-ubuntu-22.04",
+    "generic-linux-x64",
+    "github-hosted-ubuntu-24.04",
+    "self-hosted-linux-x64",
+  ]);
   expect(profiles.every((profile) => /^\d{4}-\d{2}$/.test(profile.version))).toBe(true);
+  for (const [alias, id] of Object.entries({ github: "github-hosted-ubuntu-24.04", "github-hosted": "github-hosted-ubuntu-24.04", act: "act-nektos-ubuntu-22.04", generic: "generic-linux-x64", "self-hosted": "self-hosted-linux-x64" })) {
+    const result = run(["check", "examples/sample-repo", "--profile", alias, "--format", "json"]);
+    expect(JSON.parse(result.stdout).profile.id, alias).toBe(id);
+  }
+});
+
+test("@claim:browser-demo-entry opens the isolated sample in one mobile click", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "the claim measures the 390px first viewport");
+  await page.goto("/");
+  await page.getByRole("link", { name: "Try it with sample data" }).click();
+  await expect(page).toHaveURL(/\/?\?demo=1$/);
+  await expect(page.getByText("Demo — sample data, nothing is saved")).toBeVisible();
+  const result = page.getByRole("region", { name: "Sample compatibility result" });
+  await expect(result).toContainText("NONPORTABLE");
+  await expect(result).toContainText("Floating runner image can drift");
+  const box = await result.boundingBox();
+  expect(box.y + box.height).toBeLessThanOrEqual(844);
+});
+
+test("@claim:browser-cli-sample keeps the browser report equal to the real CLI sample", async ({ page }) => {
+  const result = run(["check", "examples/sample-repo", "--profile", "act", "--format", "json"]);
+  expect(result.status).toBe(1);
+  const cli = JSON.parse(result.stdout);
+  const browserFixture = JSON.parse(readFileSync("site/src/demo-report.json", "utf8"));
+  expect(browserFixture.profile).toEqual(cli.profile);
+  expect(browserFixture.summary).toEqual(cli.summary);
+  expect(browserFixture.inventory).toEqual(cli.inventory);
+  expect(browserFixture.findings).toEqual(cli.findings);
+  await page.goto("/?demo=1");
+  await expect(page.getByRole("region", { name: "Recorded sample report" })).toContainText(`${cli.summary.errors} errors`);
+  await expect(page.getByRole("region", { name: "Recorded sample report" }).getByText(cli.findings[0].title)).toBeVisible();
+});
+
+test("@claim:exit-codes returns the documented outcomes", () => {
+  const portable = mkdtempSync(join(tmpdir(), "parity-portable-"));
+  const workflowDir = join(portable, ".github", "workflows");
+  mkdirSync(workflowDir, { recursive: true });
+  writeFileSync(join(workflowDir, "portable.yml"), "name: portable\non: push\njobs:\n  test:\n    runs-on: ubuntu-24.04\n    steps:\n      - run: echo ready\n");
+  expect(run(["check", portable, "--profile", "github", "--format", "json"]).status).toBe(0);
+  expect(run(["check", "examples/sample-repo", "--profile", "generic", "--format", "json"]).status).toBe(1);
+  expect(run(["check", join(portable, "missing")]).status).toBe(2);
+});
+
+test("@claim:probe-scope observes declared commands, shells, case behavior, and Docker without workflow execution", () => {
+  const root = mkdtempSync(join(tmpdir(), "parity-probe-scope-"));
+  const workflowDir = join(root, ".github", "workflows");
+  const marker = join(root, "executed-marker");
+  mkdirSync(workflowDir, { recursive: true });
+  writeFileSync(join(workflowDir, "scope.yml"), `name: probe scope\non: push\njobs:\n  test:\n    runs-on: ubuntu-24.04\n    steps:\n      - shell: bash\n        run: docker --version; touch ${marker}\n`);
+  const result = spawnSync(binary, ["check", root, "--profile", "github", "--format", "json", "--probe", "--sandbox"], { encoding: "utf8", env: { ...process.env, PATH: "" } });
+  const report = JSON.parse(result.stdout);
+  const probes = report.observations.map((item) => item.probe);
+  expect(probes).toEqual(expect.arrayContaining(["command:bash", "command:docker", "filesystem:case-sensitive", "docker:socket"]));
+  expect(existsSync(marker)).toBe(false);
+});
+
+test("@claim:rule-coverage reports every documented static rule category", () => {
+  const report = JSON.parse(run(["check", "examples/sample-repo", "--profile", "generic", "--format", "json"]).stdout);
+  const ids = new Set(report.findings.map((finding) => finding.rule_id));
+  expect([...ids]).toEqual(expect.arrayContaining(["APP001", "APP003", "APP010", "APP011", "APP012", "APP020", "APP030", "APP040", "APP041", "APP050", "APP051", "APP060"]));
 });
 
 test("@claim:site-privacy demo makes only same-origin requests and stores no data", async ({ page }) => {

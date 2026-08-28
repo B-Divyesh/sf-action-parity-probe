@@ -3,9 +3,9 @@
 Check a GitHub Actions workflow before changing runners.
 
 Action Parity Probe is for platform teams comparing GitHub-hosted, `act`, and
-plain Linux runners. It inventories what a workflow expects, compares those
-requirements with a versioned runner profile, and separates static warnings
-from failures observed by safe local probes. It never runs workflow steps.
+plain Linux runners. It inventories workflow requirements and compares them
+with a versioned runner profile. Static warnings stay separate from opt-in host
+checks that run only with `--probe --sandbox`. It never runs workflow steps.
 
 ## Install
 
@@ -14,21 +14,18 @@ cargo install --path .
 action-parity-probe --help
 ```
 
-Rust 1.85 or newer is required. Releases can be packaged as one binary with
-`cargo build --release`.
-
 ## Try the bundled demo
 
 ```sh
 action-parity-probe demo
 ```
 
-The command copies a sample repository into a temporary directory, checks it
-against the bundled `act-nektos-ubuntu-22.04@2026-08` profile, writes a Markdown
-report, and prints its path. Nothing is written to your repository.
+The command copies a sample repository to a temporary directory. It checks the
+bundled `act` profile. It saves a Markdown report and prints the path. Nothing
+is written to your repository.
 
-The same sample appears at
-[action-parity-probe.sociobot.in/demo](https://action-parity-probe.sociobot.in/demo).
+Open the same sample report at
+[action-parity-probe.sociobot.in/?demo=1](https://action-parity-probe.sociobot.in/?demo=1).
 
 ## Check a repository
 
@@ -42,7 +39,7 @@ action-parity-probe check . \
   --json \
   --output parity-report.json
 
-# Add safe, observed environment probes. The explicit flag is required.
+# Check the current host without running workflow steps.
 action-parity-probe check . \
   --profile self-hosted-linux-x64 \
   --probe --sandbox
@@ -51,28 +48,31 @@ action-parity-probe check . \
 action-parity-probe profiles
 ```
 
-The probe suite only tests the current host for declared commands, shells,
-case sensitivity, and Docker access. It uses a temporary directory. It does
-not execute workflow files, actions, or step scripts.
+The probe checks declared commands and shells on the current host. It also
+reports filesystem case behavior and Docker socket access. It does not execute
+workflow files, actions, or step scripts.
 
 ### Output formats
 
 - `terminal`: compact report for people.
-- `json`: stable, typed report for scripts.
-- `markdown`: portable review artifact.
+- `json`: structured output for scripts.
+- `markdown`: a report you can attach to a review.
 - `sarif`: findings for code-scanning tools.
 
-Exit codes are `0` for portable or warning-only reports, `1` when at least one
-nonportable requirement is found, and `2` for invalid input or usage.
+Exit `0` means portable or warnings only. Exit `1` means a nonportable
+requirement. Exit `2` means invalid input or usage.
 
 ## What it checks
 
 The inventory includes action references, job and service images, requested
 permissions, runner labels, explicit shells, and command assumptions in `run`
 steps. Profiles cover GitHub-hosted Ubuntu, `act`, generic Linux, and
-self-hosted Linux. Rules flag runner labels, service support, job containers,
-OIDC, shells, hosted-only actions, floating action refs, missing commands, and
-common host-path assumptions.
+self-hosted Linux.
+
+Rules check runner labels, services, and job containers. They check OpenID
+Connect (OIDC) permissions and unavailable shells. They also check hosted-only
+actions, movable action versions, missing commands, Docker access, and
+hard-coded GitHub-hosted paths.
 
 This is a readiness check. It is not a CI runner, a workflow translator, or a
 guarantee that a workflow will pass.
@@ -90,11 +90,18 @@ scripts/verify-url.sh http://127.0.0.1:4173/
 creates the static site at `dist/site/`. Run only the Rust suite with
 `cargo test`. Package the CLI with `cargo package --allow-dirty`.
 
+## Deploy
+
+Publish `dist/site/` to the static host. Keep the supplied
+`staticwebapp.config.json` with the build output. It preserves the SPA routes
+and the styled 404 response. After deployment, check `/?demo=1`, `/privacy`,
+`/terms`, and an unknown URL.
+
 ## Privacy and security
 
-The CLI has no telemetry and makes no network requests. Repository contents
-stay on the machine where the command runs. The site has no accounts,
-analytics, third-party scripts, cookies, or browser storage.
+The CLI includes no telemetry or network client code. Repository contents stay
+on the machine where the command runs. The site has no accounts, analytics,
+third-party scripts, cookies, or browser storage.
 
 ## License
 

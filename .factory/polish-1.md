@@ -49,3 +49,10 @@ Candidate repaired from `ba9a8ca50698376b22911f63dfbe030ac45ad2cf` and
 - Clean-clone evidence: `/tmp/action-parity-probe-clean-gu83jm` ran `npm ci`,
   all 15 exact claim commands from `.factory/claims.json`, `npm test`, and
   `npm run build` successfully.
+- Live recheck for every F-1-1 through F-1-28 above: opened cold at
+  `https://action-parity-probe.sociobot.in/?demo=1` after production deploy;
+  bundle `/assets/index-BzglrT4p.js` contains the demo result, and screenshot
+  `/tmp/action-parity-probe-evidence/live-demo-mobile.png` shows the summary
+  and sample finding above the 390×844 fold. `scripts/verify-url.sh` passed
+  against that URL. Live Playwright Axe passed `/`, `/?demo=1`, `/privacy`, and
+  `/terms`; the HTTP-404 page also passed with its expected document 404 log.

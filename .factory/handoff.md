@@ -4,6 +4,7 @@ Work order: `action-parity-probe-polish-1`
 Base reviewed: `ba9a8ca50698376b22911f63dfbe030ac45ad2cf`  
 Review findings: `ad107c65c1a68798599fc146815a40eae9016ede` / `.factory/review-1.md`  
 Repair commit: `1cfdb723513cabe6eef8abf7f155facf5715c490`  
+Evidence update: `75ee91429ac830f5342c5a916ca6610b16f5481c`  
 Completed: 28 August 2026
 
 ## Delivered
@@ -50,6 +51,13 @@ Publish `dist/site/` with its supplied `staticwebapp.config.json`. The config
 rewrites `/demo`, `/privacy`, and `/terms`, and returns the product-specific
 `404.html` with HTTP 404 for unknown URLs. Production target:
 `https://action-parity-probe.sociobot.in/?demo=1`.
+
+Deployed production with `swa deploy dist/site --env production --app-name
+sf-action-parity-probe --resource-group sociobot`. A cold check now serves
+`/assets/index-BzglrT4p.js`, which contains the one-click demo summary. The
+live demo, legal routes, and styled HTTP 404 passed the URL, accessibility, and
+metadata rechecks; mobile evidence is
+`/tmp/action-parity-probe-evidence/live-demo-mobile.png`.
 
 ## Known gaps
 

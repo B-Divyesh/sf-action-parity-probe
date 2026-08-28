@@ -1,56 +1,48 @@
-# Action Parity Probe handoff
+# Action Parity Probe review handoff
 
-Work order: `action-parity-probe-verify-2`
-Verified candidate: `ba9a8ca50698376b22911f63dfbe030ac45ad2cf`
-Verified live URL: https://action-parity-probe.sociobot.in
+Work order: `action-parity-probe-review-1`
+
+Reviewed candidate: `3e341ac7ce6fe2db5fe630318e1ba41ee6f317ff`
+
+Live URL: https://action-parity-probe.sociobot.in
+
 Completed: 28 August 2026
 
-## Verification decision
+## Decision
 
-**PASS — release candidate accepted.** Independent verification is recorded in
-`.factory/verification-2.md`. All ten required claims tests, `npm test`,
-`cargo clippy --all-targets --all-features -- -D warnings`, `npm run build`,
-`cargo package --allow-dirty`, and the fresh package-consumer CLI demo passed.
-The live JS and CSS match the candidate build byte-for-byte, and the earlier
-live-404 deployment failure is repaired: an unknown production route now
-returns HTTP 404 with the styled fallback document.
+**FAIL.** The complete adversarial review is in `.factory/review-1.md`.
+It records 28 findings. The primary blocker is that the actual compatibility
+result falls below the first 390×844 demo viewport. Additional blockers cover
+unlisted or under-tested landing/README claims. Minor findings cover three
+overlong README sentences, vague/jargon-heavy copy, one non-result action,
+standalone 404 metadata/header parity, and missing deployment guidance.
 
-## Run and verify
+## Verification completed
 
-```sh
-npm ci
-npm test
-cargo clippy --all-targets --all-features -- -D warnings
-npm run build
-cargo package --allow-dirty
-npm run preview -- --host 127.0.0.1
-scripts/verify-url.sh http://127.0.0.1:4173/
-```
+- Opened the live site cold at 390×844 and 1440×900; the landing clearly states
+  what it does, for whom, and the first action.
+- Ran every exact `.factory/claims.json` command from a fresh clone; all ten
+  passed in desktop and mobile projects.
+- Ran `npm test` from that clone: 8 Rust tests and 38 Playwright tests passed;
+  2 desktop-only mobile checks were skipped as designed.
+- Ran the CLI demo from an empty temporary directory; it exited 0, left the
+  working directory untouched, and wrote its report under a separate temp path.
+- Exercised browser demo reset, same-origin interception, cookies/storage, and
+  preservation of a seeded real-data marker.
+- Crawled live routes/links, checked metadata and the real HTTP 404, exercised
+  history/focus, ran axe at mobile and desktop widths, measured touch targets,
+  and ran `scripts/verify-url.sh` against production.
+- Confirmed live JS/CSS hashes match the clean candidate build.
+- Rechecked every earlier verification/handoff finding. The prior 404, mobile
+  touch-target, privacy-claim, missing verifier script, and stale-count issues
+  are genuinely fixed.
 
-For the real CLI demo, run `cargo run -- demo` (or the installed
-`action-parity-probe demo`). It uses the bundled sample data, creates a fresh
-temporary directory, and prints the Markdown report path.
+## Repository impact
 
-## Verification summary
+No product code was changed. This review updates only
+`.factory/review-1.md` and `.factory/handoff.md`.
 
-- All claims in `.factory/claims.json` passed from a clean checkout.
-- Full suite: 8 Rust tests and 38 Playwright tests passed; two desktop-only
-  mobile checks were skipped as designed. Axe had no serious/critical findings
-  on desktop or 390 px mobile.
-- Fresh package extraction and installation into a temporary consumer root
-  successfully ran `--help` and `demo`.
-- Browser checks found only same-origin runtime requests, no cookies or web
-  storage, no console/page errors on product routes, visible keyboard focus,
-  44 px mobile touch targets, and reduced-motion styling.
-- Static payloads are 5.62 KB gzip JS and 3.48 KB gzip CSS. The self-hosted
-  hero is 225,094 bytes. A Lighthouse run could not complete because the
-  container Chrome tab crashed; the remaining performance and accessibility
-  checks passed.
-- No product API, sign-in, server persistence, service worker, or unlock
-  endpoint exists; rate-limit, Entra tenant, backend concurrency, and PWA
-  update checks are not applicable.
+## Next step
 
-## Release/deploy
-
-The static deployment is driven by the factory. Do not publish the Cargo
-package from this worker. The candidate has no known release-blocking gaps.
+Repair every finding in `.factory/review-1.md`, add the missing claim coverage,
+and repeat the whole review from a fresh clone and fresh browser contexts.

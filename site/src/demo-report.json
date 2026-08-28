@@ -1,0 +1,274 @@
+{
+  "schema_version": "1",
+  "tool_version": "0.1.0",
+  "profile": {
+    "id": "act-nektos-ubuntu-22.04",
+    "version": "2026-08",
+    "label": "act with medium Ubuntu 22.04 image",
+    "description": "The common nektos/act medium image on an x64 Linux host.",
+    "os": "linux",
+    "architecture": "x86_64",
+    "runner_labels": [
+      "ubuntu-latest",
+      "ubuntu-22.04",
+      "self-hosted",
+      "linux",
+      "x64"
+    ],
+    "shells": [
+      "bash",
+      "sh",
+      "python"
+    ],
+    "commands": [
+      "bash",
+      "sh",
+      "git",
+      "docker",
+      "node",
+      "npm",
+      "python",
+      "python3",
+      "java",
+      "make",
+      "curl",
+      "wget",
+      "tar",
+      "unzip",
+      "sudo",
+      "apt-get"
+    ],
+    "hosted_only_actions": [
+      "github/codeql-action",
+      "github/branch-deploy",
+      "actions/attest-build-provenance"
+    ],
+    "supports_job_containers": true,
+    "supports_services": true,
+    "supports_oidc": false,
+    "github_host_paths": false,
+    "docker_access": true
+  },
+  "outcome": "nonportable",
+  "summary": {
+    "workflow_files": 1,
+    "requirements": 16,
+    "warnings": 8,
+    "errors": 6,
+    "observed_failures": 0
+  },
+  "inventory": {
+    "workflow_files": [
+      ".github/workflows/release.yml"
+    ],
+    "actions": [
+      {
+        "value": "actions/checkout@v4",
+        "location": ".github/workflows/release.yml · job build · Check out the repository"
+      },
+      {
+        "value": "github/codeql-action/init@v3",
+        "location": ".github/workflows/release.yml · job build · Initialise CodeQL"
+      }
+    ],
+    "runner_labels": [
+      {
+        "value": "ubuntu-latest",
+        "location": ".github/workflows/release.yml · job build"
+      },
+      {
+        "value": "macos-15",
+        "location": ".github/workflows/release.yml · job package-macos"
+      }
+    ],
+    "job_images": [
+      {
+        "value": "node:22",
+        "location": ".github/workflows/release.yml · job build"
+      }
+    ],
+    "service_images": [
+      {
+        "value": "postgres:17",
+        "location": ".github/workflows/release.yml · job build · service postgres"
+      }
+    ],
+    "permissions": [
+      {
+        "value": "contents: read",
+        "location": ".github/workflows/release.yml · workflow permissions"
+      },
+      {
+        "value": "id-token: write",
+        "location": ".github/workflows/release.yml · workflow permissions"
+      }
+    ],
+    "shells": [
+      {
+        "value": "pwsh",
+        "location": ".github/workflows/release.yml · job build · Read the hosted tool cache"
+      },
+      {
+        "value": "bash",
+        "location": ".github/workflows/release.yml · job package-macos · Build package"
+      }
+    ],
+    "commands": [
+      {
+        "value": "docker",
+        "location": ".github/workflows/release.yml · job build · Read the hosted tool cache"
+      },
+      {
+        "value": "gh",
+        "location": ".github/workflows/release.yml · job build · Read the hosted tool cache"
+      },
+      {
+        "value": "systemctl",
+        "location": ".github/workflows/release.yml · job build · Read the hosted tool cache"
+      },
+      {
+        "value": "brew",
+        "location": ".github/workflows/release.yml · job package-macos · Build package"
+      }
+    ],
+    "path_assumptions": [
+      {
+        "value": "/home/runner",
+        "location": ".github/workflows/release.yml · job build · Read the hosted tool cache"
+      },
+      {
+        "value": "RUNNER_TOOL_CACHE",
+        "location": ".github/workflows/release.yml · job build · Read the hosted tool cache"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "rule_id": "APP003",
+      "severity": "warning",
+      "source": "static",
+      "title": "Floating runner image can drift",
+      "evidence": "ubuntu-latest",
+      "location": ".github/workflows/release.yml · job build",
+      "recommendation": "Use an explicit Ubuntu label and keep the selected profile version in review artifacts."
+    },
+    {
+      "rule_id": "APP012",
+      "severity": "warning",
+      "source": "static",
+      "title": "Container image is not pinned by digest",
+      "evidence": "node:22",
+      "location": ".github/workflows/release.yml · job build",
+      "recommendation": "Pin the image digest so both runners use the same filesystem."
+    },
+    {
+      "rule_id": "APP041",
+      "severity": "warning",
+      "source": "static",
+      "title": "Action reference is mutable",
+      "evidence": "actions/checkout@v4",
+      "location": ".github/workflows/release.yml · job build · Check out the repository",
+      "recommendation": "Pin the action to a full commit SHA for repeatable comparisons."
+    },
+    {
+      "rule_id": "APP040",
+      "severity": "error",
+      "source": "static",
+      "title": "Action depends on GitHub-hosted runner behavior",
+      "evidence": "github/codeql-action/init@v3",
+      "location": ".github/workflows/release.yml · job build · Initialise CodeQL",
+      "recommendation": "Test this action on the target or replace it with portable commands."
+    },
+    {
+      "rule_id": "APP041",
+      "severity": "warning",
+      "source": "static",
+      "title": "Action reference is mutable",
+      "evidence": "github/codeql-action/init@v3",
+      "location": ".github/workflows/release.yml · job build · Initialise CodeQL",
+      "recommendation": "Pin the action to a full commit SHA for repeatable comparisons."
+    },
+    {
+      "rule_id": "APP030",
+      "severity": "error",
+      "source": "static",
+      "title": "Shell is absent from the target profile",
+      "evidence": "pwsh",
+      "location": ".github/workflows/release.yml · job build · Read the hosted tool cache",
+      "recommendation": "Install this shell or change the step to one listed by the target profile."
+    },
+    {
+      "rule_id": "APP050",
+      "severity": "warning",
+      "source": "static",
+      "title": "Command is not listed in the target image",
+      "evidence": "gh",
+      "location": ".github/workflows/release.yml · job build · Read the hosted tool cache",
+      "recommendation": "Install this command explicitly before the step, then run an observed probe."
+    },
+    {
+      "rule_id": "APP050",
+      "severity": "warning",
+      "source": "static",
+      "title": "Command is not listed in the target image",
+      "evidence": "systemctl",
+      "location": ".github/workflows/release.yml · job build · Read the hosted tool cache",
+      "recommendation": "Install this command explicitly before the step, then run an observed probe."
+    },
+    {
+      "rule_id": "APP060",
+      "severity": "error",
+      "source": "static",
+      "title": "GitHub-hosted path is not portable",
+      "evidence": "/home/runner",
+      "location": ".github/workflows/release.yml · job build · Read the hosted tool cache",
+      "recommendation": "Use runner context variables or a path created inside the job."
+    },
+    {
+      "rule_id": "APP060",
+      "severity": "error",
+      "source": "static",
+      "title": "GitHub-hosted path is not portable",
+      "evidence": "RUNNER_TOOL_CACHE",
+      "location": ".github/workflows/release.yml · job build · Read the hosted tool cache",
+      "recommendation": "Use runner context variables or a path created inside the job."
+    },
+    {
+      "rule_id": "APP012",
+      "severity": "warning",
+      "source": "static",
+      "title": "Container image is not pinned by digest",
+      "evidence": "postgres:17",
+      "location": ".github/workflows/release.yml · job build · service postgres",
+      "recommendation": "Pin the image digest so both runners use the same service version."
+    },
+    {
+      "rule_id": "APP001",
+      "severity": "error",
+      "source": "static",
+      "title": "Runner label is not in the target profile",
+      "evidence": "macos-15",
+      "location": ".github/workflows/release.yml · job package-macos",
+      "recommendation": "Map this job to a label listed by the target runner profile."
+    },
+    {
+      "rule_id": "APP050",
+      "severity": "warning",
+      "source": "static",
+      "title": "Command is not listed in the target image",
+      "evidence": "brew",
+      "location": ".github/workflows/release.yml · job package-macos · Build package",
+      "recommendation": "Install this command explicitly before the step, then run an observed probe."
+    },
+    {
+      "rule_id": "APP020",
+      "severity": "error",
+      "source": "static",
+      "title": "OIDC token exchange is not supported",
+      "evidence": "id-token: write",
+      "location": ".github/workflows/release.yml · workflow permissions",
+      "recommendation": "Use a runner integration that issues GitHub OIDC tokens or replace this authentication step."
+    }
+  ],
+  "observations": []
+}

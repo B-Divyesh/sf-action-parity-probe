@@ -1,0 +1,13 @@
+{
+  "slug": "action-parity-probe",
+  "title": "Action Parity Probe",
+  "summary": "Check workflow differences before changing CI runners.",
+  "territory": "devtools-data",
+  "artifact_class": "cli",
+  "monetization": "free",
+  "user": "Teams evaluating local or alternate runners after GitHub Actions incidents who need evidence of workflow behavior differences before moving CI.",
+  "smallest_useful_product": "A CLI that statically inventories workflow actions, images, permissions, service containers, and shell assumptions, then runs a small probe suite and emits a portable/nonportable report.",
+  "success_measure": "For ten known cross-runner failures, the probe flags at least eight before a full migration run.",
+  "constraints": "Never execute untrusted workflows without explicit sandbox mode; keep vendor profiles versioned; distinguish static warnings from observed failures.",
+  "state": "RESEARCHED"
+}

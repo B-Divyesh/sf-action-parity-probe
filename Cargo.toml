@@ -1,0 +1,36 @@
+[package]
+name = "action-parity-probe"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+description = "Check GitHub Actions workflow differences before changing runners"
+license = "MIT"
+repository = "https://github.com/B-Divyesh/sf-action-parity-probe"
+readme = "README.md"
+keywords = ["github-actions", "ci", "devtools", "portability"]
+categories = ["command-line-utilities", "development-tools"]
+include = ["src/**", "profiles/**", "examples/**", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[[bin]]
+name = "action-parity-probe"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+regex = "1.11"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+tempfile = "3.20"
+thiserror = "2.0"
+walkdir = "2.5"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.1"
+
+[profile.release]
+strip = true
+lto = "thin"
+codegen-units = 1

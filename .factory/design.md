@@ -56,9 +56,14 @@ Nothing loops or flashes.
   one dark incompatible sign, deep ink background, tactile screen-print grain,
   cinematic wide composition, no people, no logos, no legible text, no
   watermark.” It is cropped for the hero and compressed to WebP under 300 KB.
+  The original generated output is used under the factory generation terms;
+  its sidecar JSON records the prompt, deployment, size, and quality.
 - The wordmark, parity-gate favicon, report marks, and 404 power-cord drawing
   are original inline SVG/CSS geometry made in this repository.
 - Open Graph art is composed locally from the generated hero and native type.
+
+Space Grotesk and IBM Plex Mono are self-hosted under the SIL Open Font
+License. Their subset files ship with the site.
 
 Generated imagery is used as atmosphere. Required information remains live
 HTML text.

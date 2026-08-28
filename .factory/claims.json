@@ -1,0 +1,65 @@
+[
+  {
+    "id": "static-inventory",
+    "claim": "Inventories actions, images, permissions, runner labels, shells, and commands.",
+    "where": "landing page and README",
+    "test": "npm test -- --grep @claim:static-inventory",
+    "sandbox": "bundled sample repository in a fresh CLI process; assert every inventory group"
+  },
+  {
+    "id": "no-workflow-execution",
+    "claim": "No workflow steps run.",
+    "where": "landing facts, limits, README",
+    "test": "npm test -- --grep @claim:no-workflow-execution",
+    "sandbox": "temporary repository with a run step that writes a marker; assert the marker is absent"
+  },
+  {
+    "id": "observed-probes",
+    "claim": "Observed findings show host probe failures after --probe --sandbox.",
+    "where": "landing limits and README",
+    "test": "npm test -- --grep @claim:observed-probes",
+    "sandbox": "bundled sample repository; empty PATH forces host probe failures; assert observed evidence"
+  },
+  {
+    "id": "report-formats",
+    "claim": "Emits terminal, JSON, Markdown, and SARIF reports.",
+    "where": "landing page and README",
+    "test": "npm test -- --grep @claim:report-formats",
+    "sandbox": "bundled sample repository; run and validate every output format"
+  },
+  {
+    "id": "demo-sandbox",
+    "claim": "The CLI demo uses bundled sample data and writes a report in a temporary directory.",
+    "where": "demo page and README",
+    "test": "npm test -- --grep @claim:demo-sandbox",
+    "sandbox": "fresh CLI process; parse the printed path and read the generated report"
+  },
+  {
+    "id": "versioned-profiles",
+    "claim": "Ships four versioned runner profiles.",
+    "where": "landing page and README",
+    "test": "npm test -- --grep @claim:versioned-profiles",
+    "sandbox": "fresh CLI process; list profiles as JSON and validate count and version format"
+  },
+  {
+    "id": "site-privacy",
+    "claim": "The browser demo makes only same-origin requests and stores no data.",
+    "where": "landing facts, demo banner, privacy page",
+    "test": "npm test -- --grep @claim:site-privacy",
+    "sandbox": "fresh browser context; record requests and inspect localStorage and sessionStorage"
+  },
+  {
+    "id": "cli-privacy",
+    "claim": "The CLI includes no network or telemetry client code.",
+    "where": "README and privacy page",
+    "test": "npm test -- --grep @claim:cli-privacy",
+    "sandbox": "fresh checkout; inspect the dependency manifest and complete Rust source for network or telemetry clients"
+  },
+  {
+    "id": "free-open-source",
+    "claim": "Free and open source.",
+    "where": "landing facts and README",
+    "test": "npm test -- --grep @claim:free-open-source",
+    "sandbox": "fresh checkout; assert the repository contains the MIT license grant"
+  }
+]

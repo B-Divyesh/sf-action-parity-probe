@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { readFileSync } from "node:fs";
 
 for (const route of ["/", "/demo", "/privacy", "/terms", "/missing-route"]) {
   test(`route ${route} has one h1 and no serious accessibility issues`, async ({ page }) => {
@@ -48,4 +49,25 @@ test("mobile first screen keeps the main action visible", async ({ page }, testI
   expect(box.width).toBeGreaterThanOrEqual(44);
   expect(box.height).toBeGreaterThanOrEqual(44);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("mobile navigation and footer links meet the 44px touch-target minimum", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "mobile-only assertion");
+  await page.goto("/");
+  for (const name of ["Demo", "Privacy", "Terms", "Source"]) {
+    const box = await page.getByRole("link", { name: new RegExp(`^${name}`) }).last().boundingBox();
+    expect(box, `${name} has a measurable target`).not.toBeNull();
+    expect(box.width, `${name} is at least 44px wide`).toBeGreaterThanOrEqual(44);
+    expect(box.height, `${name} is at least 44px tall`).toBeGreaterThanOrEqual(44);
+  }
+});
+
+test("static host configuration returns a styled 404 for unknown paths", () => {
+  const config = JSON.parse(readFileSync("site/public/staticwebapp.config.json", "utf8"));
+  expect(config.navigationFallback).toBeUndefined();
+  expect(config.routes.filter((route) => ["/demo", "/privacy", "/terms"].includes(route.route)).map((route) => route.rewrite)).toEqual(["/index.html", "/index.html", "/index.html"]);
+  expect(config.responseOverrides?.["404"]).toEqual({ rewrite: "/404.html", statusCode: 404 });
+  const document = readFileSync("site/public/404.html", "utf8");
+  expect(document).toContain("<main id=\"main\"");
+  expect(document).toContain("This runner label does not exist");
 });

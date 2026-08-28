@@ -49,6 +49,13 @@
     "sandbox": "fresh browser context; record requests and inspect localStorage and sessionStorage"
   },
   {
+    "id": "no-accounts-or-telemetry",
+    "claim": "No accounts or telemetry.",
+    "where": "landing facts, README, privacy page",
+    "test": "npm test -- --grep @claim:no-accounts-or-telemetry",
+    "sandbox": "fresh browser context; visit the landing, demo, privacy, and terms routes; assert the exact landing fact, no account form or authentication controls, no cookies or browser storage, and only same-origin requests"
+  },
+  {
     "id": "cli-privacy",
     "claim": "The CLI includes no network or telemetry client code.",
     "where": "README and privacy page",

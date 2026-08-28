@@ -80,9 +80,10 @@ guarantee that a workflow will pass.
 ## Develop and verify
 
 ```sh
-npm install
+npm ci
 npm test
 npm run build
+scripts/verify-url.sh http://127.0.0.1:4173/
 ```
 
 `npm test` runs Rust tests plus the site and claim tests. `npm run build`
@@ -93,8 +94,7 @@ creates the static site at `dist/site/`. Run only the Rust suite with
 
 The CLI has no telemetry and makes no network requests. Repository contents
 stay on the machine where the command runs. The site has no accounts,
-analytics, third-party scripts, or browser storage outside its isolated demo
-preference key.
+analytics, third-party scripts, cookies, or browser storage.
 
 ## License
 

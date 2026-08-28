@@ -84,6 +84,27 @@ test("@claim:site-privacy demo makes only same-origin requests and stores no dat
   expect(new Set(origins)).toEqual(new Set(["http://127.0.0.1:4173"]));
 });
 
+test("@claim:no-accounts-or-telemetry has no account surface or telemetry requests", async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const origins = [];
+  page.on("request", (request) => origins.push(new URL(request.url()).origin));
+
+  for (const route of ["/", "/demo", "/privacy", "/terms"]) {
+    await page.goto(route);
+    await expect(page.locator("main")).toBeVisible();
+  }
+
+  await page.goto("/");
+  await expect(page.locator(".facts li").filter({ hasText: "No accounts or telemetry" })).toContainText("No accounts or telemetry");
+  await expect(page.locator("form, input, select, textarea")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /sign in|log in|create account|register/i })).toHaveCount(0);
+  expect(await context.cookies()).toEqual([]);
+  expect(await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length }))).toEqual({ local: 0, session: 0 });
+  expect(new Set(origins)).toEqual(new Set(["http://127.0.0.1:4173"]));
+  await context.close();
+});
+
 test("@claim:cli-privacy CLI source has no network or telemetry client", () => {
   const manifest = readFileSync(join(process.cwd(), "Cargo.toml"), "utf8");
   const source = ["src/lib.rs", "src/main.rs", "src/analyze.rs", "src/inventory.rs", "src/output.rs", "src/probe.rs", "src/profile.rs"]

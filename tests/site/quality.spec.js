@@ -19,6 +19,31 @@ for (const route of ["/", "/demo", "/privacy", "/terms", "/missing-route"]) {
   });
 }
 
+for (const [route, title, canonical] of [
+  ["/", "Action Parity Probe — check runner differences", "https://action-parity-probe.sociobot.in/"],
+  ["/?demo=1", "Demo — Action Parity Probe", "https://action-parity-probe.sociobot.in/demo"],
+  ["/demo", "Demo — Action Parity Probe", "https://action-parity-probe.sociobot.in/demo"],
+  ["/privacy", "Privacy — Action Parity Probe", "https://action-parity-probe.sociobot.in/privacy"],
+  ["/terms", "Terms — Action Parity Probe", "https://action-parity-probe.sociobot.in/terms"],
+]) {
+  test(`${route} has route-specific metadata and the complete site shell`, async ({ page }) => {
+    await page.goto(route);
+    await expect(page).toHaveTitle(title);
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /^.{20,}$/);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", canonical);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", title);
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", canonical);
+    await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute("content", title);
+    const header = page.locator("header");
+    await expect(header.getByRole("link", { name: "Demo" })).toHaveAttribute("href", "/?demo=1");
+    await expect(header.locator('a[href="/#install"]')).toHaveText("Install");
+    await expect(header.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
+    const footer = page.locator("footer");
+    await expect(footer.getByRole("link", { name: "Privacy" })).toHaveAttribute("href", "/privacy");
+    await expect(footer.getByRole("link", { name: "Terms" })).toHaveAttribute("href", "/terms");
+  });
+}
+
 test("history navigation restores the page and focuses its heading", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Try it with sample data" }).click();
@@ -33,8 +58,8 @@ test("back navigation restores the saved scroll position", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => window.scrollTo(0, 600));
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);
-  await page.evaluate(() => document.querySelector('a[href="/demo"]').click());
-  await expect(page).toHaveURL(/\/demo$/);
+  await page.evaluate(() => document.querySelector('a[href="/?demo=1"]').click());
+  await expect(page).toHaveURL(/\/?\?demo=1$/);
   await page.goBack();
   await expect(page).toHaveURL(/\/$/);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(500);

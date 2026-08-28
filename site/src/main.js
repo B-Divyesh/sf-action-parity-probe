@@ -68,7 +68,7 @@ function reportRows(limit = 4) {
 
 function terminalPreview(full = false) {
   const limit = full ? report.findings.length : 4;
-  return `<section class="terminal-shell ${full ? "terminal-full" : ""}" aria-label="Recorded sample report">
+  return `<section class="terminal-shell ${full ? "terminal-full" : ""}" ${full ? "data-demo-terminal" : ""} aria-label="Recorded sample report">
     <div class="terminal-top"><span></span><span></span><span></span><p>sample-repo / release.yml</p></div>
     <div class="terminal-body"${full ? ' tabindex="0" aria-label="Scrollable sample report"' : ""}>
       <p class="command"><span>$</span> action-parity-probe check . --profile act</p>
@@ -112,9 +112,12 @@ function homePage() {
       <div class="section-label"><span>LIVE / 02</span></div>
       <div class="section-intro">
         <h2 id="preview-title">Find incompatible steps before switching runners</h2>
-        <p>Read the bundled sample report.</p>
+        <p>Watch the real CLI check the bundled workflow.</p>
       </div>
-      ${terminalPreview()}
+      <figure class="terminal-recording">
+        <img src="/assets/terminal-recording.svg" width="1120" height="348" alt="Terminal recording of Action Parity Probe checking the bundled sample workflow." loading="lazy" />
+        <figcaption><code>action-parity-probe demo</code> prints the result and its temporary Markdown report path.</figcaption>
+      </figure>
     </section>
 
     <section class="process wrap" aria-labelledby="process-title">
@@ -156,7 +159,7 @@ action-parity-probe check . --profile self-hosted --probe --sandbox</code></pre>
 function demoPage() {
   const actions = report.inventory.actions.map((item) => `<li><code>${escapeText(item.value)}</code></li>`).join("");
   const images = [...report.inventory.job_images, ...report.inventory.service_images].map((item) => `<li><code>${escapeText(item.value)}</code></li>`).join("");
-  return `<div class="demo-banner" role="status"><span>Demo — sample data, nothing is saved</span><div><button type="button" data-reset-demo>Reset demo</button><a class="route-link" href="/#install">Install the CLI</a></div></div>
+  return `<aside class="demo-banner" aria-label="Demo controls"><div class="demo-banner-copy"><strong>Demo — sample data, nothing is saved</strong><span id="demo-reset-status" class="demo-reset-status" aria-live="polite">Sample ready.</span></div><div><button type="button" data-reset-demo aria-describedby="demo-reset-status">Reset demo</button><a class="route-link" href="/#install">Install the CLI</a></div></aside>
   <main id="main" tabindex="-1" class="demo-main wrap">
     <section class="demo-heading">
       <p class="eyebrow"><span></span> Isolated sample · read only</p>
@@ -190,7 +193,7 @@ function privacyPage() {
     "See what this product stores",
     `<h2>The CLI stays local</h2><p>The CLI reads the workflow paths you provide. It does not include telemetry or network client code.</p>
      <h2>The site collects nothing</h2><p>This site has no analytics, accounts, cookies, forms, or third-party runtime requests.</p>
-     <h2>The demo is separate</h2><p>The browser demo reads bundled sample data. Its reset action only restarts the on-page recording.</p>
+     <h2>The demo is separate</h2><p>The browser demo reads bundled sample data. Reset restores the sample report and restarts its recording.</p>
      <h2>Questions</h2><p>Review or report privacy issues in the <a href="https://github.com/B-Divyesh/sf-action-parity-probe/issues">public issue tracker <span class="sr-only">(external)</span></a>.</p>`,
   );
 }
@@ -250,9 +253,16 @@ function render({ focus = true, scrollY = 0 } = {}) {
 function bindInteractions() {
   document.querySelectorAll(".route-link").forEach((link) => link.addEventListener("click", navigate));
   document.querySelector("[data-reset-demo]")?.addEventListener("click", () => {
-    document.querySelector(".terminal-shell")?.classList.remove("replay");
-    requestAnimationFrame(() => document.querySelector(".terminal-shell")?.classList.add("replay"));
-    status.textContent = "Demo reset. Sample data is unchanged.";
+    const terminal = document.querySelector("[data-demo-terminal]");
+    const terminalBody = terminal?.querySelector(".terminal-body");
+    const resetStatus = document.querySelector("#demo-reset-status");
+    if (!terminal || !terminalBody || !resetStatus) return;
+    terminalBody.scrollTop = 0;
+    terminal.classList.remove("replay");
+    void terminal.offsetWidth;
+    terminal.classList.add("replay");
+    resetStatus.textContent = "Sample restored. Recording restarted.";
+    status.textContent = "Demo reset. Sample restored and recording restarted.";
   });
   document.querySelector("[data-copy]")?.addEventListener("click", async (event) => {
     const button = event.currentTarget;

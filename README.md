@@ -26,6 +26,8 @@ is written to your repository.
 
 Open the same sample report at
 [action-parity-probe.sociobot.in/?demo=1](https://action-parity-probe.sociobot.in/?demo=1).
+The landing page includes a self-hosted recording generated from the real demo
+command.
 
 ## Check a repository
 

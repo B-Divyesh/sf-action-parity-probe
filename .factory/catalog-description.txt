@@ -1,1 +1,1 @@
-Check GitHub Actions workflow differences before changing CI runners.
+Compare GitHub Actions workflows with alternate CI runners before switching.

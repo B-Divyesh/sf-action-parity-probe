@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="348" viewBox="0 0 1120 348" role="img" aria-labelledby="title description">
+  <title id="title">Action Parity Probe demo terminal recording</title>
+  <desc id="description">The real CLI checks the bundled workflow, reports a nonportable result, and prints a temporary Markdown report path.</desc>
+  <path fill="#090d13" stroke="#324557" stroke-width="2" d="M1 1h1090l28 28v318H1z"/>
+  <path fill="#111823" d="M2 2h1089l27 27v24H2z"/>
+  <circle fill="#ff5ca8" cx="24" cy="27" r="6"/><circle fill="#ffc857" cx="45" cy="27" r="6"/><circle fill="#78f7a6" cx="66" cy="27" r="6"/>
+  <text x="91" y="33" fill="#b8c1c8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="15">recording / bundled sample</text>
+  <text x="42" y="78" fill="#f4f1df" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">$ action-parity-probe demo</text>
+  <text x="42" y="112" fill="#b8c1c8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">Action Parity Probe v0.1.0</text>
+  <text x="42" y="146" fill="#b8c1c8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">Target: act with medium Ubuntu 22.04 image @ 2026-08</text>
+  <text x="42" y="180" fill="#ff7272" font-weight="700" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">Result: NONPORTABLE · 12 errors · 8 warnings</text>
+  <text x="42" y="214" fill="#b8c1c8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">Scanned: 1 workflow files · 16 requirements</text>
+  <text x="42" y="248" fill="#b8c1c8" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">Static and observed findings stay separate.</text>
+  <text x="42" y="282" fill="#37e6ff" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="18">Report: /tmp/action-parity-probe-demo-…/parity-report.md</text>
+</svg>

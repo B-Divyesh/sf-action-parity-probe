@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync } from "node:fs";
+import { chmodSync, existsSync, lstatSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, readlinkSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -8,6 +8,30 @@ const binary = join(process.cwd(), "target/debug/action-parity-probe");
 
 function run(args) {
   return spawnSync(binary, args, { encoding: "utf8" });
+}
+
+function snapshotTree(root) {
+  const entries = [];
+  function visit(directory, prefix = "") {
+    for (const entry of readdirSync(directory, { withFileTypes: true }).sort((left, right) => left.name.localeCompare(right.name))) {
+      const path = join(directory, entry.name);
+      const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+      const metadata = lstatSync(path);
+      const item = {
+        path: relativePath,
+        type: entry.isDirectory() ? "directory" : entry.isSymbolicLink() ? "symlink" : "file",
+        mode: metadata.mode & 0o777,
+        size: metadata.size,
+        mtimeMs: metadata.mtimeMs,
+      };
+      if (entry.isFile()) item.bytes = readFileSync(path).toString("base64");
+      if (entry.isSymbolicLink()) item.target = readlinkSync(path);
+      entries.push(item);
+      if (entry.isDirectory()) visit(path, relativePath);
+    }
+  }
+  visit(root);
+  return entries;
 }
 
 test("@claim:static-inventory inventories declared workflow requirements", () => {
@@ -58,16 +82,25 @@ test("@claim:report-formats emits four portable report formats", () => {
 
 test("@claim:demo-sandbox demo uses sample data and preserves a report", () => {
   const repository = mkdtempSync(join(tmpdir(), "parity-demo-repository-"));
-  writeFileSync(join(repository, "sentinel.txt"), "unchanged");
-  const before = readdirSync(repository).sort();
+  const workflowDirectory = join(repository, ".github", "workflows");
+  const nestedDirectory = join(repository, "fixtures", "nested");
+  mkdirSync(workflowDirectory, { recursive: true });
+  mkdirSync(nestedDirectory, { recursive: true });
+  writeFileSync(join(repository, ".hidden-config"), "mode=strict\n");
+  writeFileSync(join(workflowDirectory, "untouched.yml"), "name: untouched\non: push\n");
+  writeFileSync(join(nestedDirectory, "binary.dat"), Buffer.from([0, 1, 2, 127, 255]));
+  writeFileSync(join(repository, "sentinel.sh"), "#!/bin/sh\necho unchanged\n");
+  chmodSync(join(repository, "sentinel.sh"), 0o751);
+  symlinkSync("fixtures/nested/binary.dat", join(repository, "sample-link"));
+  const before = snapshotTree(repository);
   const result = spawnSync(binary, ["demo"], { encoding: "utf8", cwd: repository });
   expect(result.status).toBe(0);
   expect(result.stdout).toContain("Demo — bundled sample data");
   const reportPath = result.stdout.match(/Report: (.+)/)?.[1]?.trim();
   expect(reportPath).toBeTruthy();
   expect(readFileSync(reportPath, "utf8")).toContain("# Action Parity Probe report");
-  expect(readdirSync(repository).sort()).toEqual(before);
-  expect(readFileSync(join(repository, "sentinel.txt"), "utf8")).toBe("unchanged");
+  expect(snapshotTree(repository)).toEqual(before);
+  rmSync(join(reportPath, ".."), { recursive: true });
 });
 
 test("@claim:versioned-profiles ships four versioned runner profiles", () => {
@@ -112,6 +145,47 @@ test("@claim:browser-cli-sample keeps the browser report equal to the real CLI s
   await page.goto("/?demo=1");
   await expect(page.getByRole("region", { name: "Recorded sample report" })).toContainText(`${cli.summary.errors} errors`);
   await expect(page.getByRole("region", { name: "Recorded sample report" }).getByText(cli.findings[0].title)).toBeVisible();
+});
+
+test("@claim:terminal-recording shows the real CLI demo command and outcome", async ({ page }) => {
+  const result = run(["demo"]);
+  expect(result.status).toBe(0);
+  const lines = result.stdout.trim().split("\n");
+  const shownOutput = [
+    "Target: ",
+    "Result: ",
+    "Scanned: ",
+  ].map((prefix) => lines.find((line) => line.startsWith(prefix)));
+  expect(shownOutput.every(Boolean)).toBe(true);
+  const reportPath = lines.find((line) => line.startsWith("Report: "))?.slice("Report: ".length).trim();
+  expect(reportPath).toBeTruthy();
+  expect(reportPath.startsWith(tmpdir())).toBe(true);
+  expect(readFileSync(reportPath, "utf8")).toContain("# Action Parity Probe report");
+
+  const recording = readFileSync("site/public/assets/terminal-recording.svg", "utf8");
+  expect(recording).toContain("$ action-parity-probe demo");
+  for (const line of shownOutput) expect(recording).toContain(line);
+  expect(recording).toContain("Report: /tmp/action-parity-probe-demo-…/parity-report.md");
+
+  await page.goto("/");
+  const image = page.getByRole("img", { name: "Terminal recording of Action Parity Probe checking the bundled sample workflow." });
+  await image.scrollIntoViewIfNeeded();
+  await expect(image).toBeVisible();
+  await expect(page.locator(".terminal-recording figcaption")).toContainText("action-parity-probe demo");
+  rmSync(join(reportPath, ".."), { recursive: true });
+});
+
+test("@claim:demo-reset restores the report and visibly restarts its recording", async ({ page }) => {
+  await page.goto("/?demo=1");
+  const terminal = page.locator("[data-demo-terminal]");
+  const body = terminal.locator(".terminal-body");
+  await body.evaluate((element) => { element.scrollTop = element.scrollHeight; });
+  expect(await body.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Reset demo" }).click();
+  await expect(page.getByText("Sample restored. Recording restarted.")).toBeVisible();
+  expect(await body.evaluate((element) => element.scrollTop)).toBe(0);
+  await expect(terminal).toHaveClass(/replay/);
+  expect(await terminal.locator(".terminal-row").first().evaluate((element) => getComputedStyle(element).animationName)).toBe("reset-sign-on");
 });
 
 test("@claim:exit-codes returns the documented outcomes", () => {

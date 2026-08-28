@@ -32,7 +32,7 @@
     "claim": "The CLI demo uses bundled sample data and writes a report in a temporary directory.",
     "where": "demo page and README",
     "test": "npm test -- --grep @claim:demo-sandbox",
-    "sandbox": "fresh CLI process; parse the printed path and read the generated report"
+    "sandbox": "fresh CLI process from a nested fixture repository; compare every path, byte, file type, mode, size, and modification time before and after; parse and read the temporary report"
   },
   {
     "id": "versioned-profiles",
@@ -54,6 +54,20 @@
     "where": "browser demo and README",
     "test": "npm test -- --grep @claim:browser-cli-sample",
     "sandbox": "fresh CLI process and browser context; compare profile, summary, inventory, and findings with the generated browser fixture"
+  },
+  {
+    "id": "terminal-recording",
+    "claim": "The landing page records the real CLI demo command, profile, outcome, and temporary report path.",
+    "where": "landing terminal recording and README",
+    "test": "npm test -- --grep @claim:terminal-recording",
+    "sandbox": "fresh CLI demo process; compare its command, target, result, scan count, and temporary report behavior with the generated self-hosted SVG"
+  },
+  {
+    "id": "demo-reset",
+    "claim": "Reset demo restores the report and restarts its recording.",
+    "where": "browser demo banner and privacy page",
+    "test": "npm test -- --grep @claim:demo-reset",
+    "sandbox": "fresh browser demo; scroll the isolated report, reset it, assert scroll restoration, visible status, and a restarted row animation"
   },
   {
     "id": "exit-codes",

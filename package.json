@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --config site/vite.config.js",
-    "generate:demo": "node scripts/generate-demo.mjs",
+    "generate:demo": "node scripts/generate-demo.mjs && node scripts/generate-terminal-recording.mjs",
     "build:site": "vite build --config site/vite.config.js",
     "build": "npm run generate:demo && npm run build:site",
     "preview": "vite preview --config site/vite.config.js",

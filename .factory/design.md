@@ -60,6 +60,10 @@ Nothing loops or flashes.
   its sidecar JSON records the prompt, deployment, size, and quality.
 - The wordmark, parity-gate favicon, report marks, and 404 power-cord drawing
   are original inline SVG/CSS geometry made in this repository.
+- `terminal-recording.svg` is generated locally during each build from the
+  real `action-parity-probe demo` output. Its terminal frame uses the product's
+  ticket corners and neon status palette; the live demo rows provide the
+  one-shot reveal and reduced-motion fallback.
 - Open Graph art is composed locally from the generated hero and native type.
 
 Space Grotesk and IBM Plex Mono are self-hosted under the SIL Open Font

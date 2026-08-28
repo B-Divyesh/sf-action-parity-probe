@@ -3,6 +3,7 @@
 Work order: `action-parity-probe-polish-1`  
 Base reviewed: `ba9a8ca50698376b22911f63dfbe030ac45ad2cf`  
 Review findings: `ad107c65c1a68798599fc146815a40eae9016ede` / `.factory/review-1.md`  
+Repair commit: `1cfdb723513cabe6eef8abf7f155facf5715c490`  
 Completed: 28 August 2026
 
 ## Delivered
@@ -34,9 +35,9 @@ tests across desktop and 390×844 mobile. The build output is `dist/site/`.
 The generated initial JS is 18.51 KB raw / 5.73 KB gzip; CSS is 12.99 KB raw /
 3.61 KB gzip.
 
-Every exact command in `.factory/claims.json` was also run from a clean clone;
-all 15 passed. The clean-clone log and deployed-site check are recorded after
-the repair commit in this handoff's follow-up commit.
+Every exact command in `.factory/claims.json` was also run from clean clone
+`/tmp/action-parity-probe-clean-gu83jm` after `npm ci`; all 15 passed. Its full
+`npm test` and `npm run build` completed after the claim loop.
 
 Playwright Axe found no serious or critical issue on `/`, `/demo`, `/privacy`,
 `/terms`, or `/missing-route` at both tested widths. The standalone Axe CLI

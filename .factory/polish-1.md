@@ -46,3 +46,6 @@ Candidate repaired from `ba9a8ca50698376b22911f63dfbe030ac45ad2cf` and
   `/privacy`, `/terms`, and `/missing-route` at both tested viewports.
 - Screenshot evidence: `/tmp/action-parity-probe-evidence/demo-mobile.png` and
   `/tmp/action-parity-probe-evidence/demo-desktop.png`.
+- Clean-clone evidence: `/tmp/action-parity-probe-clean-gu83jm` ran `npm ci`,
+  all 15 exact claim commands from `.factory/claims.json`, `npm test`, and
+  `npm run build` successfully.

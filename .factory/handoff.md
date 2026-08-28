@@ -46,4 +46,4 @@ The site does not claim offline browser reload support and ships no service work
 
 ## Release/deploy
 
-Push the repair commit on `main`; static deployment is driven from that branch with `dist/site/` as the product artifact. Do not publish the Cargo package from this worker. The factory owns registry and deployment credentials.
+Repair commit `3dfb9ad` was pushed to `origin/main`. Static deployment is driven from that branch with `dist/site/` as the product artifact; this repository contains no deployment workflow or deployment credential. At 14:39 UTC, the public host was still serving the prior artifact (`Last-Modified: 13:31 UTC`) and returned HTTP 200 for the verifier's unknown URL, so live 404 and hash-identity confirmation remains for the factory deployment observer after it consumes `main`. Do not publish the Cargo package from this worker. The factory owns registry and deployment credentials.

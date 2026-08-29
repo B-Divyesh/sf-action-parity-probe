@@ -58,6 +58,32 @@ test("@claim:no-workflow-execution never executes workflow steps", () => {
   expect(existsSync(marker)).toBe(false);
 });
 
+test("@claim:read-only-check preserves every repository entry during analysis", () => {
+  const repository = mkdtempSync(join(tmpdir(), "parity-read-only-"));
+  const workflowDirectory = join(repository, ".github", "workflows");
+  const nestedDirectory = join(repository, "fixtures", "nested");
+  const marker = join(repository, "workflow-ran");
+  mkdirSync(workflowDirectory, { recursive: true });
+  mkdirSync(nestedDirectory, { recursive: true });
+  writeFileSync(join(repository, ".hidden-config"), "keep=this\n");
+  writeFileSync(join(workflowDirectory, "release.yml"), `name: Read only\non: push\njobs:\n  verify:\n    runs-on: ubuntu-latest\n    steps:\n      - shell: bash\n        run: docker --version; touch ${marker}\n`);
+  writeFileSync(join(nestedDirectory, "payload.bin"), Buffer.from([0, 1, 2, 127, 255]));
+  writeFileSync(join(repository, "sentinel.sh"), "#!/bin/sh\necho unchanged\n");
+  chmodSync(join(repository, "sentinel.sh"), 0o751);
+  symlinkSync("fixtures/nested/payload.bin", join(repository, "sample-link"));
+  const before = snapshotTree(repository);
+
+  for (const args of [
+    ["check", repository, "--profile", "act", "--format", "json"],
+    ["check", repository, "--profile", "act", "--format", "json", "--probe", "--sandbox"],
+  ]) {
+    const result = run(args);
+    expect([0, 1]).toContain(result.status);
+    expect(snapshotTree(repository)).toEqual(before);
+  }
+  expect(existsSync(marker)).toBe(false);
+});
+
 test("@claim:observed-probes labels host failures as observed", () => {
   const result = spawnSync(
     binary,
@@ -142,6 +168,7 @@ test("@claim:browser-cli-sample keeps the browser report equal to the real CLI s
   expect(browserFixture.summary).toEqual(cli.summary);
   expect(browserFixture.inventory).toEqual(cli.inventory);
   expect(browserFixture.findings).toEqual(cli.findings);
+  expect(cli.inventory.workflow_files).toContain(".github/workflows/release.yml");
   await page.goto("/?demo=1");
   await expect(page.getByRole("region", { name: "Recorded sample report" })).toContainText(`${cli.summary.errors} errors`);
   await expect(page.getByRole("region", { name: "Recorded sample report" }).getByText(cli.findings[0].title)).toBeVisible();
@@ -261,4 +288,22 @@ test("@claim:cli-privacy CLI source has no network or telemetry client", () => {
 test("@claim:free-open-source ships under the MIT license", () => {
   const license = readFileSync(join(process.cwd(), "LICENSE"), "utf8");
   expect(license).toContain("Permission is hereby granted, free of charge");
+});
+
+test("@claim:static-routing serves product routes and a styled HTTP 404", async ({ page }) => {
+  for (const [route, heading] of [
+    ["/demo", "See the sample workflow differences"],
+    ["/privacy", "See what this product stores"],
+    ["/terms", "Use the report as migration evidence"],
+  ]) {
+    const response = await page.goto(route, { waitUntil: "networkidle" });
+    expect(response?.status(), route).toBe(200);
+    await expect(page.locator("h1")).toHaveText(heading);
+  }
+
+  const missing = await page.goto("/missing-route", { waitUntil: "networkidle" });
+  expect(missing?.status()).toBe(404);
+  await expect(page).toHaveTitle("Not found — Action Parity Probe");
+  await expect(page.locator("h1")).toHaveText("Page not found");
+  await expect(page.getByRole("link", { name: "Return home" })).toHaveAttribute("href", "/");
 });

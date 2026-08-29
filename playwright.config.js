@@ -15,8 +15,8 @@ export default defineConfig({
     { name: "mobile", use: { viewport: { width: 390, height: 844 } } },
   ],
   webServer: {
-    command: "npm run preview -- --host 127.0.0.1",
+    command: "swa start dist/site --swa-config-location dist/site --host 127.0.0.1 --port 4173",
     port: 4173,
-    reuseExistingServer: true,
+    reuseExistingServer: false,
   },
 });

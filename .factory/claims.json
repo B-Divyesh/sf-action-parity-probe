@@ -14,6 +14,13 @@
     "sandbox": "temporary repository with a run step that writes a marker; assert the marker is absent"
   },
   {
+    "id": "read-only-check",
+    "claim": "Checking a workflow, including a sandbox probe, does not change workflow files.",
+    "where": "landing limits and README",
+    "test": "npm test -- --grep @claim:read-only-check",
+    "sandbox": "temporary repository with hidden and nested files, a symlink, executable mode, binary data, and a marker-writing workflow step; recursively compare paths, bytes, types, links, modes, sizes, and modification times after normal and sandbox-probe checks"
+  },
+  {
     "id": "observed-probes",
     "claim": "Observed findings show host probe failures after --probe --sandbox.",
     "where": "landing limits and README",
@@ -117,5 +124,12 @@
     "where": "landing facts and README",
     "test": "npm test -- --grep @claim:free-open-source",
     "sandbox": "fresh checkout; assert the repository contains the MIT license grant"
+  },
+  {
+    "id": "static-routing",
+    "claim": "The supplied static-host configuration serves Demo, Privacy, and Terms routes and a styled 404 page.",
+    "where": "README deploy instructions",
+    "test": "npm test -- --grep @claim:static-routing",
+    "sandbox": "built site served by the Azure Static Web Apps emulator using staticwebapp.config.json; assert deep-route 200 responses and a styled HTTP 404 for an unknown route"
   }
 ]

@@ -1,6 +1,6 @@
-# Copy audit — polish round 2
+# Copy audit — polish round 4
 
-Reviewed: 28 August 2026. Counts treat commands, paths, hyphenated terms, and
+Reviewed: 29 August 2026. Counts treat commands, paths, hyphenated terms, and
 code identifiers as one word. Interface fragments are included. No sentence
 exceeds 22 words. The banned-word scan found no matches.
 
@@ -18,7 +18,8 @@ exceeds 22 words. The banned-word scan found no matches.
 | No accounts or telemetry | 4 | Fact; pass |
 | Free and open source | 4 | Fact; pass |
 | Runner racks line a night market under connected parity signs. | 10 | Image alt; pass |
-| Each sign represents one sample workflow requirement. | 7 | Pass |
+| Sample workflow: `release.yml` checked against the `act` profile. | 8 | `browser-cli-sample`; pass |
+| CLI demo | 2 | Direct section label; pass |
 | Find incompatible steps before switching runners | 6 | H2; pass |
 | Watch the real CLI check the bundled workflow. | 8 | Pass |
 | Terminal recording of Action Parity Probe checking the bundled sample workflow. | 10 | Image alt; pass |
@@ -30,13 +31,13 @@ exceeds 22 words. The banned-word scan found no matches.
 | Compare with GitHub-hosted, act, generic Linux, or self-hosted Linux. | 9 | Pass |
 | Share the compatibility report | 4 | H3; pass |
 | Share terminal, JSON, Markdown, or SARIF output with your migration review. | 11 | Pass |
-| Start for real | 3 | Label; pass |
 | Run the check on your repository | 6 | H2; pass |
 | Install the CLI. | 3 | Pass |
 | Then choose a versioned target profile. | 6 | Pass |
 | Copy install command | 3 | Action; pass |
+| Limits | 1 | Direct section label; pass |
 | A readiness report, not another runner | 6 | H2; pass |
-| It does not execute actions, translate YAML, or promise a passing build. | 12 | Pass |
+| It does not execute actions, translate YAML, or promise a passing build. | 12 | `no-workflow-execution`, `read-only-check`; pass |
 | Static findings show declared risks. | 5 | Pass |
 | Observed findings show local probe failures. | 6 | Pass |
 | Read the privacy boundary | 4 | Link; pass |
@@ -79,14 +80,16 @@ exceeds 22 words. The banned-word scan found no matches.
 | They check OpenID Connect (OIDC) permissions and unavailable shells. | 9 | Pass |
 | They also check hosted-only actions, movable action versions, missing commands, Docker access, and hard-coded GitHub-hosted paths. | 15 | Pass |
 | This is a readiness check. | 5 | Pass |
-| It is not a CI runner, a workflow translator, or a guarantee that a workflow will pass. | 17 | Pass |
+| It is not a CI runner. | 5 | Pass |
+| It does not translate or change workflow files. | 8 | `read-only-check`; pass |
+| It does not guarantee that a workflow will pass. | 9 | Pass |
 | `npm test` runs Rust tests plus the site and claim tests. | 11 | Pass |
 | `npm run build` creates the static site at `dist/site/`. | 9 | Pass |
 | Run only the Rust suite with `cargo test`. | 8 | Pass |
 | Package the CLI with `cargo package --allow-dirty`. | 7 | Pass |
 | Publish `dist/site/` to the static host. | 6 | Pass |
 | Keep the supplied `staticwebapp.config.json` with the build output. | 8 | Pass |
-| It preserves the SPA routes and the styled 404 response. | 10 | Pass |
+| It serves the product routes and a styled 404 page. | 10 | `static-routing`; pass |
 | After deployment, check `/?demo=1`, `/privacy`, `/terms`, and an unknown URL. | 8 | Pass |
 | The CLI includes no telemetry or network client code. | 9 | Pass |
 | Repository contents stay on the machine where the command runs. | 10 | Pass |

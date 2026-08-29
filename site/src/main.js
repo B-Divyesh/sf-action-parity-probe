@@ -104,12 +104,12 @@ function homePage() {
       </div>
       <figure class="hero-art">
         <img src="/assets/hero-market.webp" width="1440" height="960" alt="Runner racks line a night market under connected parity signs." fetchpriority="high" />
-        <figcaption><span>01</span> Each sign represents one sample workflow requirement.</figcaption>
+        <figcaption>Sample workflow: <code>release.yml</code> checked against the <code>act</code> profile.</figcaption>
       </figure>
     </section>
 
     <section class="preview-section wrap" aria-labelledby="preview-title">
-      <div class="section-label"><span>LIVE / 02</span></div>
+      <div class="section-label"><span>CLI demo</span></div>
       <div class="section-intro">
         <h2 id="preview-title">Find incompatible steps before switching runners</h2>
         <p>Watch the real CLI check the bundled workflow.</p>
@@ -121,18 +121,16 @@ function homePage() {
     </section>
 
     <section class="process wrap" aria-labelledby="process-title">
-      <div class="section-label"><span>ROUTE / 03</span></div>
       <h2 id="process-title">How the check works</h2>
       <ol class="process-list">
-        <li><b>01</b><div><h3>Point at a repository</h3><p>The CLI reads YAML files under <code>.github/workflows</code>.</p></div></li>
-        <li><b>02</b><div><h3>Choose a runner profile</h3><p>Compare with GitHub-hosted, act, generic Linux, or self-hosted Linux.</p></div></li>
-        <li><b>03</b><div><h3>Share the compatibility report</h3><p>Share terminal, JSON, Markdown, or SARIF output with your migration review.</p></div></li>
+        <li><div><h3>Point at a repository</h3><p>The CLI reads YAML files under <code>.github/workflows</code>.</p></div></li>
+        <li><div><h3>Choose a runner profile</h3><p>Compare with GitHub-hosted, act, generic Linux, or self-hosted Linux.</p></div></li>
+        <li><div><h3>Share the compatibility report</h3><p>Share terminal, JSON, Markdown, or SARIF output with your migration review.</p></div></li>
       </ol>
     </section>
 
     <section id="install" class="install wrap" aria-labelledby="install-title">
       <div>
-        <p class="eyebrow"><span></span> Start for real</p>
         <h2 id="install-title">Run the check on your repository</h2>
         <p>Install the CLI. Then choose a versioned target profile.</p>
       </div>
@@ -145,7 +143,7 @@ action-parity-probe check . --profile self-hosted --probe --sandbox</code></pre>
     </section>
 
     <section class="limits wrap" aria-labelledby="limits-title">
-      <div class="section-label"><span>BOUNDARY / 04</span></div>
+      <div class="section-label"><span>Limits</span></div>
       <div>
         <h2 id="limits-title">A readiness report, not another runner</h2>
         <p>It does not execute actions, translate YAML, or promise a passing build.</p>
@@ -216,9 +214,8 @@ function legalPage(label, headline, body) {
 function notFoundPage() {
   return `<main id="main" tabindex="-1" class="not-found wrap">
     <div class="broken-cable" aria-hidden="true"><span></span><i>404</i><span></span></div>
-    <p class="eyebrow"><span></span> Route disconnected</p>
-    <h1>This runner label does not exist</h1>
-    <p>Check the address or return to the main parity check.</p>
+    <h1>Page not found</h1>
+    <p>Check the address or return to Action Parity Probe.</p>
     <a class="button primary route-link" href="/">Return home</a>
   </main>`;
 }

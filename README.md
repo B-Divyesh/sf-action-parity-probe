@@ -76,8 +76,8 @@ Connect (OIDC) permissions and unavailable shells. They also check hosted-only
 actions, movable action versions, missing commands, Docker access, and
 hard-coded GitHub-hosted paths.
 
-This is a readiness check. It is not a CI runner, a workflow translator, or a
-guarantee that a workflow will pass.
+This is a readiness check. It is not a CI runner. It does not translate or
+change workflow files. It does not guarantee that a workflow will pass.
 
 ## Develop and verify
 
@@ -95,8 +95,8 @@ creates the static site at `dist/site/`. Run only the Rust suite with
 ## Deploy
 
 Publish `dist/site/` to the static host. Keep the supplied
-`staticwebapp.config.json` with the build output. It preserves the SPA routes
-and the styled 404 response. After deployment, check `/?demo=1`, `/privacy`,
+`staticwebapp.config.json` with the build output. It serves the product routes
+and a styled 404 page. After deployment, check `/?demo=1`, `/privacy`,
 `/terms`, and an unknown URL.
 
 ## Privacy and security

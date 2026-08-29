@@ -15,7 +15,8 @@ for (const route of ["/", "/demo", "/privacy", "/terms", "/missing-route"]) {
     await expect(page.locator("[style]")).toHaveCount(0);
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations.filter((item) => ["serious", "critical"].includes(item.impact))).toEqual([]);
-    expect(errors).toEqual([]);
+    const unexpectedErrors = errors.filter((error) => route !== "/missing-route" || !error.includes("status of 404"));
+    expect(unexpectedErrors).toEqual([]);
   });
 }
 
@@ -94,7 +95,8 @@ test("static host configuration returns a styled 404 for unknown paths", () => {
   expect(config.responseOverrides?.["404"]).toEqual({ rewrite: "/404.html", statusCode: 404 });
   const document = readFileSync("site/public/404.html", "utf8");
   expect(document).toContain("<main id=\"main\"");
-  expect(document).toContain("This runner label does not exist");
+  expect(document).toContain("Page not found");
+  expect(document).not.toContain("Route disconnected");
   expect(document).toContain('rel="canonical"');
   expect(document).toContain('property="og:title"');
   expect(document).toContain('name="twitter:card"');

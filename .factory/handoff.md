@@ -1,44 +1,61 @@
-# Action Parity Probe review-4 handoff
+# Action Parity Probe polish-4 handoff
 
-- Work order: `action-parity-probe-review-4`
-- Reviewed commit: `36b933c0d906ccf1477cdf36109074b4915d89a3`
+- Work order: `action-parity-probe-polish-4`
+- Repair commit: `2c489078e4c176dfe52dbd2aface3785bd69ff85`
+- Deployed URL: <https://action-parity-probe.sociobot.in>
+- Deployment: Azure Static Web Apps production deployment
+  `9840b81c-1ed8-42ec-8a8e-71a12165f9ad`
 - Completed: 29 August 2026
-- Live URL: <https://action-parity-probe.sociobot.in>
 
-## What was done
+## What changed
 
-Performed the requested adversarial, no-product-code-change review and wrote
-`.factory/review-4.md`. The verdict is **FAIL** with two blocking unlisted-claim
-findings and two minor plain-copy findings. This handoff and the review are the
-only intended repository changes.
+- Registered and implemented two missing claim tests: repository read-only
+  analysis, including `--probe --sandbox`, and static-host routing with a real
+  HTTP 404.
+- Switched site browser tests from Vite preview to the Azure Static Web Apps
+  emulator so route assertions exercise `staticwebapp.config.json`.
+- Rewrote the remaining decorative landing labels and sample caption in direct
+  language without changing the neon night-market visual system.
+- Corrected both the SPA fallback and standalone 404 to say “Page not found.”
+- Updated the copy audit, catalog description, claim registry, evidence
+  screenshots, and the cumulative finding map in `.factory/polish-4.md`.
 
-## How verified
+## How to run and verify
 
-- Opened the live site cold at 390×844 and 1440×900 and recorded the first-read
-  answers before scrolling.
-- Audited every landing and README sentence, heading, label, and action.
-- Exercised the one-click browser demo, visible result, Reset demo, seeded real
-  storage preservation, cookies, and the full request log.
-- Ran the CLI demo from an empty temporary directory and confirmed that its
-  report was written to a separate temporary sandbox.
-- Cloned the reviewed commit to
-  `/tmp/action-parity-probe-review4-clean-YuTctH/repo`, ran `npm ci`, and ran
-  all 17 exact commands from `.factory/claims.json`; all passed.
-- Ran the clean-clone full `npm test` (2 Rust unit, 6 Rust CLI, and 61
-  Playwright tests passed; 3 viewport skips) and `npm run build`; `dist/site/`
-  was produced.
-- Crawled all live routes and links, checked headers and metadata, verified
-  deep links/back/focus/scroll restoration, and ran Playwright Axe on five
-  routes at both widths with zero serious or critical violations.
-- Ran `scripts/verify-url.sh https://action-parity-probe.sociobot.in/`; it
-  passed.
-- Read every earlier review, polish report, and handoff, then rechecked each
-  earlier finding against the live site and current code/tests.
+```sh
+npm ci
+npm test
+npm run build
+cargo clippy --all-targets --all-features -- -D warnings
+cargo package --allow-dirty
+scripts/verify-url.sh http://127.0.0.1:4173/
+```
+
+The Playwright server is the Azure Static Web Apps emulator and therefore
+tests `/demo`, `/privacy`, `/terms`, and the actual HTTP 404 behavior against
+the built artifact. Run every exact command in `.factory/claims.json` from a
+fresh clone for the claim contract.
+
+## Evidence
+
+- Fresh clone `/tmp/action-parity-probe-polish-4-clean-o5pe8y/repo`: all 19
+  registered claim commands passed independently; its full `npm test` passed
+  2 Rust unit tests, 6 Rust CLI tests, and 65 browser tests, with 3 intentional
+  viewport skips. `npm run build` passed.
+- Current artifact: clippy and package verification passed. Built JavaScript
+  is 5,897 bytes gzip and CSS is 3,716 bytes gzip.
+- Live cold contexts checked all five routes at 1440×900 and 390×844. Axe
+  found zero serious or critical violations; `scripts/verify-url.sh` passed
+  home, demo, privacy, and terms; the unknown route returned HTTP 404.
+- Live demo requests were same-origin only, created no browser storage, and
+  showed its result above the 390×844 fold. Reset demo reset scroll and replayed
+  the sample rows. Live Lighthouse scored 99 performance, 100 accessibility,
+  100 best practices, and 100 SEO (LCP 2254 ms, CLS 0, TBT 0 ms).
+
+See `.factory/polish-4.md` for every review finding and its evidence. The
+screenshots are under `.factory/evidence/polish-4-live-*.png`.
 
 ## Known gaps and next steps
 
-See F-4-1 through F-4-4 in `.factory/review-4.md`. No registered claim test
-failed, but PASS is blocked until the no-translation and deployment-routing
-claims are registered or removed. The remaining copy should drop decorative
-sequence labels and use a literal 404 heading. No offline claim exists, so an
-offline interception check was not applicable.
+None. There is no offline behavior claim, service worker, account, telemetry,
+or networked product action to carry into a separate offline or privacy flow.

@@ -1,76 +1,59 @@
-# Action Parity Probe polish-4 handoff
+# Action Parity Probe review-5 handoff
 
-## Independent verification 3 — PASS
+## Result
 
-- Verified candidate: `e46ad9a434f46b01be627793d7b59f57881d4ff1`
-- Verified production URL: <https://action-parity-probe.sociobot.in>
-- Result: **PASS — no critical, high, medium, or low defects found.**
+Adversarial first-read review 5 is complete against commit
+`84135fe5959b4f72abde9ba85533b99094a6b1e3` and the production URL
+<https://action-parity-probe.sociobot.in>.
 
-An independent verifier ran all 19 exact claim commands from
-`.factory/claims.json`, the full test suite, production build, clippy, format,
-package, and clean-consumer CLI checks. Fresh SHA-256 comparisons showed that
-the production HTML and every deployed asset match the candidate build
-byte-for-byte. Live desktop and 390px mobile checks covered the product routes,
-real 404, keyboard demo path, focus, reduced motion, privacy request/storage
-boundary, headers/caching, console/page errors, and axe; all passed. Details
-and command evidence are in `.factory/verification-3.md`.
+Verdict: **PASS — zero blocking findings, zero minor findings, and no untested
+product claim.** The full report is `.factory/review-5.md`.
 
-- Work order: `action-parity-probe-polish-4`
-- Repair commit: `2c489078e4c176dfe52dbd2aface3785bd69ff85`
-- Deployed URL: <https://action-parity-probe.sociobot.in>
-- Deployment: Azure Static Web Apps production deployment
-  `9840b81c-1ed8-42ec-8a8e-71a12165f9ad`
-- Completed: 29 August 2026
+No product code was modified. This work order changes only the review and
+handoff documentation.
 
-## What changed
+## Verification performed
 
-- Registered and implemented two missing claim tests: repository read-only
-  analysis, including `--probe --sandbox`, and static-host routing with a real
-  HTTP 404.
-- Switched site browser tests from Vite preview to the Azure Static Web Apps
-  emulator so route assertions exercise `staticwebapp.config.json`.
-- Rewrote the remaining decorative landing labels and sample caption in direct
-  language without changing the neon night-market visual system.
-- Corrected both the SPA fallback and standalone 404 to say “Page not found.”
-- Updated the copy audit, catalog description, claim registry, evidence
-  screenshots, and the cumulative finding map in `.factory/polish-4.md`.
+- Opened the live site cold at 390×844 and 1440×900 and recorded the first
+  screen before scrolling.
+- Entered the browser demo in one click, confirmed a result and sample finding
+  above the mobile fold, exercised Reset, preserved a seeded real-storage key,
+  confirmed all browser storage remained empty, and recorded same-origin-only
+  requests.
+- Ran the CLI demo from a fresh temporary directory.
+- Cloned the repository to
+  `/tmp/action-parity-probe-review5-clean-1n4lLB/repo`, ran `npm ci`, and ran
+  all 19 exact `.factory/claims.json` commands independently. All passed.
+- Ran clean-clone `npm test`: 2 Rust unit tests, 6 Rust CLI tests, and 65
+  Playwright tests passed; 3 viewport-opposite tests were intentionally
+  skipped.
+- Ran clean-clone `npm run build`; `dist/site/` was produced and JavaScript was
+  5.87 kB gzip.
+- Crawled every live route and link. Product routes returned 200 and the
+  designed unknown route returned 404.
+- Confirmed live titles, one H1, metadata, canonicals, social art, icons,
+  headers, history/focus behavior, reduced motion, and route shell consistency.
+- Ran live Playwright axe integration on `/`, `/demo`, `/privacy`, `/terms`,
+  and `/missing-route` at both widths. All ten scans had zero violations.
+- Ran `scripts/verify-url.sh` against the four live product routes. All passed.
+- Matched the live JS and CSS hashes to the clean build.
+- Rechecked every earlier finding from reviews 1, 2, and 4 against both live
+  behavior and current code/tests. All remain fixed.
 
-## How to run and verify
+## How to reproduce
 
 ```sh
 npm ci
 npm test
 npm run build
-cargo clippy --all-targets --all-features -- -D warnings
-cargo package --allow-dirty
-scripts/verify-url.sh http://127.0.0.1:4173/
+scripts/verify-url.sh https://action-parity-probe.sociobot.in/
 ```
 
-The Playwright server is the Azure Static Web Apps emulator and therefore
-tests `/demo`, `/privacy`, `/terms`, and the actual HTTP 404 behavior against
-the built artifact. Run every exact command in `.factory/claims.json` from a
-fresh clone for the claim contract.
-
-## Evidence
-
-- Fresh clone `/tmp/action-parity-probe-polish-4-clean-o5pe8y/repo`: all 19
-  registered claim commands passed independently; its full `npm test` passed
-  2 Rust unit tests, 6 Rust CLI tests, and 65 browser tests, with 3 intentional
-  viewport skips. `npm run build` passed.
-- Current artifact: clippy and package verification passed. Built JavaScript
-  is 5,897 bytes gzip and CSS is 3,716 bytes gzip.
-- Live cold contexts checked all five routes at 1440×900 and 390×844. Axe
-  found zero serious or critical violations; `scripts/verify-url.sh` passed
-  home, demo, privacy, and terms; the unknown route returned HTTP 404.
-- Live demo requests were same-origin only, created no browser storage, and
-  showed its result above the 390×844 fold. Reset demo reset scroll and replayed
-  the sample rows. Live Lighthouse scored 99 performance, 100 accessibility,
-  100 best practices, and 100 SEO (LCP 2254 ms, CLS 0, TBT 0 ms).
-
-See `.factory/polish-4.md` for every review finding and its evidence. The
-screenshots are under `.factory/evidence/polish-4-live-*.png`.
+Run every exact command in `.factory/claims.json` separately from a fresh
+clone to reproduce the claim audit.
 
 ## Known gaps and next steps
 
-None. There is no offline behavior claim, service worker, account, telemetry,
-or networked product action to carry into a separate offline or privacy flow.
+None found. No offline behavior is claimed, so offline verification is not
+applicable. Preserve the current clean-clone claim and live phone checks for
+future releases.

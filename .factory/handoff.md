@@ -1,5 +1,20 @@
 # Action Parity Probe polish-4 handoff
 
+## Independent verification 3 — PASS
+
+- Verified candidate: `e46ad9a434f46b01be627793d7b59f57881d4ff1`
+- Verified production URL: <https://action-parity-probe.sociobot.in>
+- Result: **PASS — no critical, high, medium, or low defects found.**
+
+An independent verifier ran all 19 exact claim commands from
+`.factory/claims.json`, the full test suite, production build, clippy, format,
+package, and clean-consumer CLI checks. Fresh SHA-256 comparisons showed that
+the production HTML and every deployed asset match the candidate build
+byte-for-byte. Live desktop and 390px mobile checks covered the product routes,
+real 404, keyboard demo path, focus, reduced motion, privacy request/storage
+boundary, headers/caching, console/page errors, and axe; all passed. Details
+and command evidence are in `.factory/verification-3.md`.
+
 - Work order: `action-parity-probe-polish-4`
 - Repair commit: `2c489078e4c176dfe52dbd2aface3785bd69ff85`
 - Deployed URL: <https://action-parity-probe.sociobot.in>
